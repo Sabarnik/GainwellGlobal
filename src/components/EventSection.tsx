@@ -36,7 +36,7 @@ export default function EventsSection() {
       title: 'New Facility Inauguration',
       date: '28 April 2024',
       description: 'We are proud to announce the opening of our state-of-the-art manufacturing facility in Pune.',
-      image: 'https://images.unsplash.com/photo-1590065480004-477ef6d4d5de?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       category: 'Milestone',
       location: 'Pune, India',
       readMoreLink: '#'
@@ -55,7 +55,7 @@ export default function EventsSection() {
       title: 'Employee Excellence Awards',
       date: '12 June 2024',
       description: 'Celebrating our outstanding employees who demonstrated exceptional performance.',
-      image: 'https://images.unsplash.com/photo-1515168833906-d2a3b82b3029?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1560448204-603b3fc33ddc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       category: 'Recognition',
       location: 'Kolkata, India',
       readMoreLink: '#'
