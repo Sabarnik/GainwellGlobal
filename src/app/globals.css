@@ -1,26 +1,45 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Custom Global Styles for Gainwell */
+
+/* Font Face (DIN Pro if hosted locally / via CDN) */
+@font-face {
+  font-family: 'DIN Pro';
+  src: url('/fonts/DINPro-Regular.woff2') format('woff2'),
+       url('/fonts/DINPro-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'DIN Pro';
+  src: url('/fonts/DINPro-Bold.woff2') format('woff2'),
+       url('/fonts/DINPro-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Body Styling */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply font-din text-gray-800 bg-white leading-relaxed;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-din font-bold text-gainwell-darkblue;
+}
+
+/* Links */
+a {
+  @apply text-gainwell-blue hover:text-gainwell-orange transition-colors;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply bg-gainwell-orange text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-gainwell-blue transition-all;
+}
+
+.btn-secondary {
+  @apply bg-gainwell-green text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-gainwell-darkblue transition-all;
 }
