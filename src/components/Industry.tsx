@@ -79,7 +79,7 @@ const IndustryCarousel: React.FC = () => {
         if (!isHovering) {
             intervalRef.current = setInterval(() => {
                 setCurrentIndex((prev) => (prev + 1) % totalItems)
-            }, 4000)
+            }, 2500)
         } else {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current)
@@ -112,15 +112,17 @@ const IndustryCarousel: React.FC = () => {
         const minDistance = Math.min(distance, totalItems - distance)
 
         const scale = isActive ? 1.15 : Math.max(0.7, 1 - minDistance * 0.15)
-        const opacity = isActive ? 1 : Math.max(0.8, 1 - minDistance * 0.1) // Increased opacity for non-adjacent cards
+
         const zIndex = isActive ? 10 : Math.max(1, 10 - minDistance)
 
         return {
-            transform: `rotateY(${angle}deg) translateZ(380px) scale(${scale})`, // Reduced translateZ to decrease gap
-            opacity,
+            transform: `rotateY(${angle}deg) translateZ(470px) rotateY(${-angle}deg) scale(${scale})`,
+            opacity: 1,
             zIndex,
             transition: 'all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)',
         }
+
+
     }
 
     const getCardColor = (index: number) => {
@@ -168,7 +170,8 @@ const IndustryCarousel: React.FC = () => {
     return (
         <div
             ref={sectionRef}
-            className="relative w-full min-h-screen bg-white overflow-hidden flex items-center justify-center py-12"
+            id="industry"
+            className="relative w-full min-h-screen bg-gray-100 overflow-hidden flex items-center justify-center py-12"
         >
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
@@ -194,15 +197,13 @@ const IndustryCarousel: React.FC = () => {
                     <div className={`absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#F5872E]/50 to-transparent transform transition-all duration-1000 delay-200 ease-out ${isVisible ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0'}`}></div>
 
                     <div className="relative overflow-hidden py-4">
-                        <h1 className="text-5xl md:text-6xl font-din font-bold text-[#08193C] mb-4 relative">
-                            <span className={`inline-block transition-all duration-700 ease-out delay-300 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>Industry</span>
-                            <span className={`inline-block mx-2 transition-all duration-700 ease-out delay-500 ${isVisible ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
-                                <span className="text-[#F5872E]">Presence</span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-[#08193C] relative inline-block">
+                            <span className="relative">
+                                Industry Presence
+                                <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-300 ease-out origin-left scale-x-0"></span>
+                                <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}></span>
                             </span>
-                        </h1>
-
-                        {/* Subtle gradient underline */}
-                        <div className={`h-1 w-40 mx-auto bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-700 ease-out ${isVisible ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0'}`}></div>
+                        </h2>
                     </div>
 
                     <p className={`text-xl text-[#3A55A5] font-roboto max-w-2xl mx-auto mt-6 transition-all duration-1000 delay-800 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>

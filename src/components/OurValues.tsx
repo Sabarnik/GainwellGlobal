@@ -11,39 +11,39 @@ export default function OurValues() {
   const videoRef = useRef<HTMLIFrameElement>(null);
   const sliderIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Enhanced values data with more descriptive content
+  // Updated values data with 4P's of Sustainability
   const values = [
     {
-      title: "Integrity First",
-      description: "We maintain unwavering honesty and strong moral principles in all business dealings, creating trust with clients and partners.",
-      detailedDescription: "Our commitment to ethical practices means we're transparent in our communications, accountable for our actions, and consistently do what's right even when no one is watching.",
-      icon: "fas fa-shield-alt",
+      title: "Purpose",
+      description: "An affirmation of our organisation's reason for being in existence and driving our mission forward.",
+      detailedDescription: "Our purpose defines why we exist beyond making profits. It's our north star that guides our decisions, inspires our team, and creates meaningful impact in the industries we serve.",
+      icon: "fas fa-bullseye",
       color: "from-[#3A55A5] to-[#4A6BC5]",
-      features: ["Ethical decision-making", "Transparent communications", "Accountability in actions"]
+      features: ["Mission-driven approach", "Long-term vision", "Meaningful impact"]
     },
     {
-      title: "Innovation Driven",
-      description: "We embrace creativity and forward-thinking to develop cutting-edge solutions that address tomorrow's challenges today.",
-      detailedDescription: "Our culture of innovation encourages experimentation, values diverse perspectives, and continuously seeks better ways to serve our clients and improve our processes.",
-      icon: "fas fa-lightbulb",
+      title: "People",
+      description: "The positive impact our employees, partners and communities have on our business success.",
+      detailedDescription: "Our people are our greatest asset. We invest in their growth, value their contributions, and foster an inclusive environment where everyone can thrive and reach their full potential.",
+      icon: "fas fa-users",
       color: "from-[#F5872E] to-[#FFA057]",
-      features: ["Continuous improvement", "Creative problem-solving", "Future-focused solutions"]
+      features: ["Employee development", "Inclusive culture", "Community engagement"]
     },
     {
-      title: "Excellence in Execution",
-      description: "We pursue the highest quality standards in every project, delivering exceptional value and attention to detail.",
-      detailedDescription: "From initial concept to final delivery, we maintain rigorous quality control processes and never settle for 'good enough' when we can achieve exceptional.",
-      icon: "fas fa-star",
+      title: "Planet",
+      description: "Our commitment to minimizing environmental impact and promoting sustainable practices.",
+      detailedDescription: "We recognize our responsibility to protect the environment for future generations. Through sustainable operations, eco-friendly solutions, and responsible resource management, we contribute to a healthier planet.",
+      icon: "fas fa-globe-americas",
       color: "from-[#40A748] to-[#50C758]",
-      features: ["Quality assurance", "Attention to detail", "Results-oriented approach"]
+      features: ["Environmental stewardship", "Sustainable operations", "Eco-friendly solutions"]
     },
     {
-      title: "Collaborative Partnership",
-      description: "We believe in the power of teamwork, both internally and with clients, to achieve extraordinary outcomes.",
-      detailedDescription: "We foster an environment of mutual respect where diverse talents converge, ideas are freely shared, and collective success is celebrated above individual achievement.",
-      icon: "fas fa-handshake",
+      title: "Profit",
+      description: "Generating sustainable value for our stakeholders while maintaining ethical business practices.",
+      detailedDescription: "Profit enables us to reinvest in innovation, reward our stakeholders, and continue our mission. We pursue financial success responsibly, ensuring it aligns with our values and long-term sustainability.",
+      icon: "fas fa-chart-line",
       color: "from-[#3ABEEE] to-[#5AD0FF]",
-      features: ["Team synergy", "Client collaboration", "Knowledge sharing"]
+      features: ["Sustainable growth", "Stakeholder value", "Ethical profitability"]
     },
   ];
 
@@ -140,7 +140,7 @@ export default function OurValues() {
             </span>
           </h2>
           <p className="mt-6 text-lg text-[#3A55A5] font-roboto max-w-2xl mx-auto transition-all duration-1000 delay-700 ease-out">
-            The foundational principles that guide our decisions, actions, and relationships
+            The 4P&apos;s that guide our sustainable business practices and long-term vision
           </p>
         </div>
 
@@ -171,20 +171,10 @@ export default function OurValues() {
                 onLoad={() => setVideoLoaded(true)}
               ></iframe>
 
-              {/* Watch on YouTube Button */}
-              <a
-                href="https://www.youtube.com/watch?v=DyNfwjZJEm4"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
-              >
-                Watch on YouTube
-              </a>
-
               {/* Video Title */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                <h3 className="text-white font-din font-bold text-xl">Our Commitment to Excellence</h3>
-                <p className="text-gray-300 font-roboto text-sm mt-1">Learn about what drives us forward</p>
+                <h3 className="text-white font-din font-bold text-xl">Our Commitment to Sustainability</h3>
+                <p className="text-gray-300 font-roboto text-sm mt-1">Learn about our 4P framework</p>
               </div>
             </div>
 
@@ -192,12 +182,12 @@ export default function OurValues() {
 
           {/* Enhanced Values Section with Slider - Now on the RIGHT */}
           <div
-            className={`transition-all duration-1000 delay-300 ease-out ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'} h-full`}
+            className={`transition-all duration-1000 delay-300 ease-out ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-100'} h-full`}
           >
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 h-full flex flex-col">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-3xl font-din font-bold text-[#08193C]">
-                  What Guides Our Journey
+                  The 4P&apos;s of Sustainability
                 </h3>
                 <div className="flex space-x-2">
                   <button
@@ -215,7 +205,7 @@ export default function OurValues() {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden flex-grow min-h-[200px]">
+              <div className="relative overflow-hidden flex-grow min-h-[250px]">
                 {values.map((value, index) => (
                   <div
                     key={index}
@@ -276,8 +266,7 @@ export default function OurValues() {
             Living Our Values
           </h4>
           <p className="text-[#3A55A5] font-roboto text-lg">
-            These principles are not just concepts— they are the daily practices that shape our culture,
-            guide our decisions, and define our relationships with clients, partners, and each other.
+            These principles are not just concepts— they are the daily practices that shape our culture, guide our decisions, and define our relationships with clients, partners, and each other.
           </p>
         </div>
       </div>

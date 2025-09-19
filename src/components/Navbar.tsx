@@ -1,26 +1,15 @@
 // components/Navbar.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <header 
       id="site-header" 
-      className={`w-full transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}
+      className="w-full bg-white shadow-md transition-all duration-300"
     >
       <div className="container max-w-7xl mx-auto px-4">
         {/* Reduced padding from py-4 to py-3 to make navbar thinner */}
@@ -45,25 +34,25 @@ export default function Navbar() {
           <div className="hidden lg:flex space-x-8">
             <Link 
               href="#home"
-              className={`nav-link text-[15px] font-semibold tracking-wider hover:text-primary ${isScrolled ? 'text-gray-800' : 'text-white'}`}
+              className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
               HOME
             </Link>
             <Link 
-              href="#about"
-              className={`nav-link text-[15px] font-semibold tracking-wider hover:text-primary ${isScrolled ? 'text-gray-800' : 'text-white'}`}
+              href="#about-us"  // Changed to match AboutUsSection ID
+              className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
               ABOUT US
             </Link>
             <Link 
-              href="#business"
-              className={`nav-link text-[15px] font-semibold tracking-wider hover:text-primary ${isScrolled ? 'text-gray-800' : 'text-white'}`}
+              href="#industry"  // Changed to match IndustryCarousel section
+              className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
               BUSINESS
             </Link>
             <Link 
-              href="#csr"
-              className={`nav-link text-[15px] font-semibold tracking-wider hover:text-primary ${isScrolled ? 'text-gray-800' : 'text-white'}`}
+              href="#csr-grid"  // Changed to match CSRSection ID
+              className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
               COMMUNITY WORK
             </Link>

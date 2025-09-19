@@ -28,9 +28,8 @@ const SleekFooter: React.FC = () => {
   const [showAllBrands, setShowAllBrands] = useState(false);
   const [showAllCompanies, setShowAllCompanies] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [isMounted, setIsMounted] = useState(false); // Add mounted state
+  const [isMounted, setIsMounted] = useState(false);
   
-  // Use useMemo to memoize the footerLinks object
   const footerLinks = useMemo<FooterLinkCategory>(() => ({
     'Our Businesses': [
       'Infrastructure',
@@ -45,7 +44,7 @@ const SleekFooter: React.FC = () => {
       'CAT',
       'FG Wilson',
       'SEM',
-      'STECH',
+      'SITECH',
       'Tulip',
       'Highwall Miner',
       'Lintec & Linnhoff',
@@ -74,10 +73,9 @@ const SleekFooter: React.FC = () => {
       'Careers',
       'News & Events'
     ]
-  }), []); // Empty dependency array ensures it's only created once
+  }), []);
 
   const checkIfMobile = useCallback(() => {
-    // Only access window if it's available (client-side)
     if (typeof window === 'undefined') return;
     
     const mobile = window.innerWidth <= 768;
@@ -99,16 +97,14 @@ const SleekFooter: React.FC = () => {
   }, [footerLinks]);
 
   const toggleVisibility = useCallback(() => {
-    // Only access window if it's available (client-side)
     if (typeof window === 'undefined') return;
     
     setIsVisible(window.pageYOffset > 300);
   }, []);
 
   useEffect(() => {
-    setIsMounted(true); // Set mounted to true when component mounts
+    setIsMounted(true);
     
-    // Only add event listeners on client-side
     if (typeof window !== 'undefined') {
       checkIfMobile();
       window.addEventListener('resize', checkIfMobile);
@@ -137,7 +133,6 @@ const SleekFooter: React.FC = () => {
   }, []);
 
   const scrollToTop = useCallback(() => {
-    // Only access window if it's available (client-side)
     if (typeof window === 'undefined') return;
     
     window.scrollTo({
@@ -152,17 +147,14 @@ const SleekFooter: React.FC = () => {
     { icon: Youtube, href: 'https://www.youtube.com/tillimitedindia', label: 'YouTube' }
   ], []);
 
-  // Don't render anything during SSR to avoid window reference errors
   if (!isMounted) {
     return null;
   }
 
   return (
-    <footer className="bg-[#08193C] text-white relative overflow-hidden">
-      {/* Subtle gradient overlay */}
+    <footer className="bg-[#3A55A5] text-white relative overflow-hidden w-full">
       <div className="absolute inset-0 bg-gradient-to-b from-[#0A1F45] to-[#08193C] opacity-95"></div>
 
-      {/* Back to Top Button */}
       <AnimatePresence>
         {isVisible && (
           <motion.button
@@ -180,52 +172,48 @@ const SleekFooter: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-10 xl:px-20 py-8 md:py-10 relative z-10">
-        {/* Compact top section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-10 relative z-10 w-full">
+        {/* Top section with logo and social links */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-          {/* Logo and Social Links on the left */}
-          <div className="flex items-center gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <Link href="/" className="inline-block">
-                <Image
-                  src={`${basePath}/ftr-logo.png`}
-                  alt="Gainwell Group"
-                  width={150}
-                  height={40}
-                  className="h-10 w-auto brightness-0 invert"
-                />
-              </Link>
-            </motion.div>
+          {/* Logo only - removed all filters to display as original PNG */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <Link href="/" className="inline-block">
+              <Image
+                src={`${basePath}/ftr-logo.png`}
+                alt="Gainwell Group"
+                width={180}
+                height={50}
+                className="h-12 w-auto"
+              />
+            </Link>
+          </motion.div>
 
-            {/* Social links moved to the left */}
-            <div className="flex space-x-2">
-              {socialLinks.map(({ icon: Icon, href, label }) => (
-                <motion.a
-                  key={label}
-                  href={href}
-                  className="w-8 h-8 bg-[#1a2233] hover:bg-[#3A55A5] rounded-lg flex items-center justify-center transition-all border border-[#3A55A5]/50 hover:border-[#3A55A5] shadow-sm"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  aria-label={label}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon size={14} className="text-slate-300 hover:text-white" />
-                </motion.a>
-              ))}
-            </div>
+          {/* Social links - positioned to the right on desktop, bottom on mobile */}
+          <div className="flex space-x-2 w-full sm:w-auto justify-center sm:justify-start">
+            {socialLinks.map(({ icon: Icon, href, label }) => (
+              <motion.a
+                key={label}
+                href={href}
+                className="w-10 h-10 bg-[#1a2233] hover:bg-[#3A55A5] rounded-lg flex items-center justify-center transition-all border border-[#3A55A5]/50 hover:border-[#3A55A5] shadow-sm"
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label={label}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icon size={18} className="text-slate-300 hover:text-white" />
+              </motion.a>
+            ))}
           </div>
         </div>
 
-        {/* Footer content - always expanded on desktop, controlled by state on mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-10">
-          {/* Column 1 - Brand & Contact */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8 w-full">
+          {/* Column 1 - Contact Info */}
           <div className="md:col-span-2 lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -287,7 +275,7 @@ const SleekFooter: React.FC = () => {
 
           {/* Column 2-5 - Links */}
           <div className="md:col-span-2 lg:col-span-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-6 w-full">
               {Object.entries(footerLinks).map(([category, links], index) => (
                 <motion.div
                   key={category}
@@ -333,7 +321,6 @@ const SleekFooter: React.FC = () => {
                         animate={isMobile ? { height: expandedSections[category] ? "auto" : 0, opacity: expandedSections[category] ? 1 : 0 } : { height: "auto", opacity: 1 }}
                         transition={{ duration: 0.3 }}
                       >
-                        {/* For Brands and Companies sections, show only 5 items initially with Show More button */}
                         {(category === 'Our Brands' || category === 'Companies')
                           ? ((category === 'Our Brands' ? showAllBrands : showAllCompanies)
                             ? links
@@ -372,7 +359,6 @@ const SleekFooter: React.FC = () => {
                           ))
                         }
 
-                        {/* Show More button for Brands and Companies sections */}
                         {(category === 'Our Brands' || category === 'Companies') && links.length > 5 && (
                           <motion.li
                             initial={{ opacity: 0 }}
@@ -408,9 +394,8 @@ const SleekFooter: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom - Changed to a different color from the brand palette */}
-      <div className="py-4 relative z-10 bg-[#292974]">
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-10 xl:px-20">
+      <div className="py-4 relative z-10 bg-[#292974] w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <div className="text-xs text-slate-300 text-center md:text-left">
               © 2025 Gainwell Group. All Rights Reserved

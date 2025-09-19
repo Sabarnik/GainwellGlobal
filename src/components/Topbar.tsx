@@ -1,35 +1,19 @@
 // components/Topbar.tsx
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function Topbar() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10); // change after slight scroll
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <div
       id="topbar"
-      className={`w-full transition-all duration-300 ${
-        scrolled ? "bg-white text-blue shadow" : "bg-transparent text-white"
-      }`}
+      className="w-full bg-[#3A55A5] text-white shadow transition-all duration-300"
     >
       <div className="container max-w-7xl mx-auto px-4 py-2 flex justify-end items-center text-sm">
         <div className="flex items-center space-x-4">
           <div className="flex space-x-4 items-center">
             <Link
               href="mailto:marketing@gainwellindia.com"
-              // Added explicit text color classes
-              className={`flex items-center space-x-2 hover:underline ${
-                scrolled ? "text-gray-800" : "text-white"
-              }`}
+              className="flex items-center space-x-2 hover:underline text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -47,13 +31,10 @@ export default function Topbar() {
               </svg>
               <span>marketing@gainwellindia.com</span>
             </Link>
-            <span className={`hidden sm:inline ${scrolled ? "text-gray-800" : "text-white"}`}>|</span>
+            <span className="hidden sm:inline text-white">|</span>
             <Link
               href="tel:+91 1800 419 3356"
-              // Added explicit text color classes
-              className={`flex items-center space-x-2 hover:underline ${
-                scrolled ? "text-gray-800" : "text-white"
-              }`}
+              className="flex items-center space-x-2 hover:underline text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -73,8 +54,7 @@ export default function Topbar() {
             </Link>
           </div>
 
-          <span className={`hidden sm:inline ${scrolled ? "text-gray-800" : "text-white"}`}>|</span>
-
+          <span className="hidden sm:inline text-white">|</span>
         </div>
       </div>
     </div>

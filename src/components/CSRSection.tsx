@@ -1,54 +1,69 @@
-// components/CSRSection.tsx
+// components/CSRGridSection.tsx
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-
-export default function CSRSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+export default function CSRGridSection() {
+  const [activeSet, setActiveSet] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // CSR initiatives data with actual web images
+  // CSR initiatives data with brand colors from guidelines
   const csrData = [
     {
       id: 1,
-      title: 'Education & Skill Development',
-      description: 'Empowering communities through educational initiatives and vocational training programs that create sustainable livelihoods and foster economic growth.',
-      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      title: 'Roof for the little Angels: Antyodoy Anath Ashram',
+      description: 'Antyodoy Anath Ashram, was built with the efforts of a single individual from the remote locales of Paushi, in Purba Medinipur, West Bengal. It was founded by Balaram Karan, with... ',
+      image: `${basePath}/ashram_11.jpg`,
       icon: 'fas fa-graduation-cap',
-      color: 'from-[#3A55A5] to-[#4A6BC5]',
+      color: '#3A55A5', // Primary blue from brand guidelines
       bgColor: 'bg-blue-100'
     },
     {
       id: 2,
-      title: 'Environmental Sustainability',
-      description: 'Implementing eco-friendly practices, reducing carbon footprint, and promoting green initiatives to protect our planet for future generations.',
-      image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      title: 'Health in your hands – Empowering the Self',
+      description: 'With more than 100 million people in India likely to develop diabetes by 2030, this silent killer of a disease has become an epidemic. Doctors are now urging people to make healthy choices so.. ',
+      image: `${basePath}/health_1.jpg`,
       icon: 'fas fa-leaf',
-      color: 'from-[#40A748] to-[#50C758]',
+      color: '#40A748', // Primary green from brand guidelines
       bgColor: 'bg-green-100'
     },
     {
       id: 3,
-      title: 'Community Welfare',
-      description: 'Supporting local communities through healthcare initiatives, infrastructure development, and social welfare programs that improve quality of life.',
-      image: 'https://images.unsplash.com/photo-1577896851231-70ef18861754?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      title: 'Ray of hope at Premasree',
+      description: 'Premasree began in Kolkata with an aim of providing shelter, nurturing the love of knowledge and inculcating skill among underprivileged and differently abled children. This project aims at providing ... ',
+      image: `${basePath}/ray_1.jpg`,
       icon: 'fas fa-hands-helping',
-      color: 'from-[#F5872E] to-[#FFA057]',
+      color: '#F5872E', // Primary orange from brand guidelines
       bgColor: 'bg-orange-100'
     },
     {
       id: 4,
-      title: 'Employee Volunteering',
-      description: 'Encouraging and facilitating employee participation in social initiatives, creating a culture of giving back and making a positive impact.',
-      image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      title: 'Creating a brighter future through Self-Empowerment',
+      description: 'A sustainable world can only be achieved with the economic independence of every individual. While population grows, employment opportunities remain limited and of poor quality for ... ',
+      image: `${basePath}/creating_1.jpg`,
       icon: 'fas fa-users',
-      color: 'from-[#3ABEEE] to-[#4AD0FF]',
+      color: '#3ABEEE', // Primary cyan from brand guidelines
       bgColor: 'bg-cyan-100'
-    }
+    },
+    {
+      id: 5,
+      title: 'A Life of Dignity',
+      description: 'India is said to have one of the youngest population across the globe. However, the flip side is that the elderly will constitute 20 per cent of the total population in the country by 2050, as... ',
+      image: `${basePath}/dignity_1.jpg`,
+      icon: 'fas fa-users',
+      color: '#08193C', // Dark blue from secondary colors
+      bgColor: 'bg-blue-100'
+    },
   ];
+
+  // Group data into sets of 3 for the 3-grid layout
+  const groupedData = [];
+  for (let i = 0; i < csrData.length; i += 3) {
+    groupedData.push(csrData.slice(i, i + 3));
+  }
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -75,30 +90,30 @@ export default function CSRSection() {
     let interval: NodeJS.Timeout;
     if (isVisible && !isHovering) {
       interval = setInterval(() => {
-        setActiveIndex((prev) => (prev + 1) % csrData.length);
-      }, 4000);
+        setActiveSet((prev) => (prev + 1) % groupedData.length);
+      }, 5000);
     }
 
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [csrData.length, isVisible, isHovering]);
+  }, [groupedData.length, isVisible, isHovering]);
 
   const handlePrev = () => {
-    setActiveIndex(activeIndex === 0 ? csrData.length - 1 : activeIndex - 1);
+    setActiveSet(activeSet === 0 ? groupedData.length - 1 : activeSet - 1);
   };
 
   const handleNext = () => {
-    setActiveIndex((activeIndex + 1) % csrData.length);
+    setActiveSet((activeSet + 1) % groupedData.length);
   };
 
   const goToSlide = (index: number) => {
-    setActiveIndex(index);
+    setActiveSet(index);
   };
 
   return (
     <section
-      id="csr"
+      id="csr-grid"
       ref={sectionRef}
       className="relative py-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden"
     >
@@ -115,7 +130,6 @@ export default function CSRSection() {
       </div>
 
       <div className="container max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-
         {/* Section Header */}
         <div
           className={`text-center mb-16 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
@@ -132,128 +146,108 @@ export default function CSRSection() {
           </p>
         </div>
 
-        {/* Desktop Layout - Carousel */}
-        <div className="hidden lg:block">
+        {/* 3-Grid Auto Slide Section */}
+        <div 
+          className="relative overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-100"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+        >
+          {/* Grid track */}
           <div
-            className="relative h-[500px] overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-100"
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
+            className="transition-transform duration-700 ease-in-out flex"
+            style={{ transform: `translateX(-${activeSet * 100}%)` }}
           >
-            {/* Carousel track */}
-            <div
-              className="h-full transition-transform duration-700 ease-in-out flex"
-              style={{ transform: `translateX(-${activeIndex * 100}%)` }}
-            >
-              {csrData.map((item) => (
-                <div
-                  key={item.id}
-                  className="w-full h-full flex-shrink-0 flex items-center px-12"
-                >
-                  <div className="grid grid-cols-2 gap-12 items-center">
-                    {/* Image */}
-                    <div className="relative h-96 rounded-2xl overflow-hidden shadow-lg transition-all duration-700 ease-out">
+            {groupedData.map((set, setIndex) => (
+              <div
+                key={setIndex}
+                className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-8 p-8"
+              >
+                {set.map((item, itemIndex) => (
+                  <div 
+                    key={item.id} 
+                    className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 transition-all duration-300 hover:shadow-xl flex flex-col h-full"
+                    style={{ borderTop: `5px solid ${item.color}` }}
+                  >
+                    {/* Image container with fixed aspect ratio */}
+                    <div className="relative h-72 w-full flex-shrink-0">
                       <Image
                         src={item.image}
                         alt={item.title}
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        priority={itemIndex === 0 && setIndex === 0}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="space-y-6">
-                      <div className="flex items-center">
-                        <div className={`w-16 h-16 rounded-full flex items-center justify-center ${item.bgColor} mr-6 shadow-md`}>
-                          <i className={`${item.icon} text-2xl ${item.color.replace('from-', 'text-').split(' ')[0]}`}></i>
-                        </div>
-                        <h3 className="text-3xl font-bold text-[#08193C]">{item.title}</h3>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                      <div className="absolute top-5 left-5 w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-lg">
+                        <i className={`${item.icon} text-xl`} style={{ color: item.color }}></i>
                       </div>
-                      <p className="text-[#3A55A5] text-lg leading-relaxed">
+                    </div>
+                    
+                    {/* Content container with flex-grow for consistent height */}
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="text-xl font-bold text-[#08193C] mb-3 leading-tight">{item.title}</h3>
+                      <p className="text-[#3A55A5] text-base mb-5 flex-grow line-clamp-3">
                         {item.description}
                       </p>
-                      <button className="bg-gradient-to-r from-[#F5872E] to-[#3A55A5] text-white font-bold py-3 px-8 rounded-full hover:shadow-lg transition-all duration-300">
+                      <button 
+                        className="text-base font-semibold py-3 px-5 rounded-full transition-all duration-300 mt-auto"
+                        style={{ 
+                          backgroundColor: `${item.color}15`, 
+                          color: item.color 
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = item.color;
+                          e.currentTarget.style.color = 'white';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = `${item.color}15`;
+                          e.currentTarget.style.color = item.color;
+                        }}
+                      >
                         Learn More
                       </button>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Navigation buttons - Moved further out */}
-            <button
-              onClick={handlePrev}
-              className="absolute -left-0 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-lg text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
-              aria-label="Previous CSR initiative"
-            >
-              <i className="fas fa-chevron-left group-hover:scale-110 transition-transform duration-200"></i>
-            </button>
-            <button
-              onClick={handleNext}
-              className="absolute -right-0 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-lg text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
-              aria-label="Next CSR initiative"
-            >
-              <i className="fas fa-chevron-right group-hover:scale-110 transition-transform duration-200"></i>
-            </button>
-
-            {/* Indicators */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
-              {csrData.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-500 ease-in-out ${index === activeIndex ? 'bg-gradient-to-r from-[#F5872E] to-[#3A55A5] scale-125' : 'bg-gray-300'}`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
+                ))}
+              </div>
+            ))}
           </div>
 
-          {/* Current slide indicator */}
-          <div className="flex justify-end items-center mt-4 px-2">
-            <div className="text-sm text-[#3A55A5]">
-              {activeIndex + 1} / {csrData.length}
-            </div>
+          {/* Navigation buttons */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
+            aria-label="Previous CSR initiatives"
+          >
+            <i className="fas fa-chevron-left text-lg group-hover:scale-110 transition-transform duration-200"></i>
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
+            aria-label="Next CSR initiatives"
+          >
+            <i className="fas fa-chevron-right text-lg group-hover:scale-110 transition-transform duration-200"></i>
+          </button>
+
+          {/* Indicators */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
+            {groupedData.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-500 ease-in-out ${index === activeSet ? 'bg-gradient-to-r from-[#F5872E] to-[#3A55A5] scale-125' : 'bg-gray-300'}`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
 
-        {/* Mobile Layout - Stacked Cards */}
-        <div className="lg:hidden space-y-6">
-          {csrData.map((item, index) => (
-            <div
-              key={item.id}
-              className={`bg-white rounded-2xl p-6 shadow-lg border border-gray-100 transition-all duration-700 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
-              style={{ transitionDelay: `${index * 100}ms` }}
-            >
-              <div className="flex items-center mb-4">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${item.bgColor} mr-4 shadow-md`}>
-                  <i className={`${item.icon} text-xl ${item.color.replace('from-', 'text-').split(' ')[0]}`}></i>
-                </div>
-                <h3 className="text-xl font-bold text-[#08193C]">{item.title}</h3>
-              </div>
-
-              <div className="relative h-48 rounded-xl overflow-hidden mb-4">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-              </div>
-
-              <p className="text-[#3A55A5] text-sm mb-4">
-                {item.description}
-              </p>
-
-              <button className="w-full bg-gradient-to-r from-[#F5872E] to-[#3A55A5] text-white font-bold py-2 px-4 rounded-full text-sm">
-                Learn More
-              </button>
-            </div>
-          ))}
+        {/* Current slide indicator */}
+        <div className="flex justify-end items-center mt-6 px-2">
+          <div className="text-base text-[#3A55A5] font-medium">
+            {activeSet + 1} / {groupedData.length}
+          </div>
         </div>
       </div>
 
@@ -263,6 +257,16 @@ export default function CSRSection() {
 
       {/* Add Font Awesome for icons */}
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+      {/* Custom styles for line clamping */}
+      <style jsx>{`
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
     </section>
   );
 }

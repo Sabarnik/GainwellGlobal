@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { useRouter } from "next/navigation";
+
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 const Hero: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const router = useRouter();
-  
+
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -25,21 +25,16 @@ const Hero: React.FC = () => {
       {/* Video Background */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src={`${basePath}/hero-bg-video.mp4`}
+        src={`${basePath}/hero_bg_video.mp4`}
         autoPlay
         loop
         muted
         playsInline
       />
-      
-      {/* Dark Gradient Overlays */}
-      <div className="absolute top-0 left-0 w-full h-[40%] bg-gradient-to-b from-black/80 via-black/50 to-transparent z-10"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-[#355d73]/50 to-black/50 z-10"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/0 to-black/0 z-10"></div>
 
       {/* Text Content - Aligned with navbar container */}
-      <div className="relative z-30 max-w-7xl mx-auto my-10 px-6 md:px-12 xl:px-20 h-full">
-        <div className="h-full mb-20 flex items-center">
+      <div className="relative z-30 container max-w-7xl mx-auto px-4 h-full">
+        <div className="h-full mb-20 flex items-center pt-36    ">
           <div className={`${isMobile ? 'w-full flex justify-center' : 'w-full lg:w-1/2'}`}>
             <motion.div
               className={`space-y-6 ${isMobile ? 'max-w-none w-full text-center px-4' : 'max-w-2xl'}`}
@@ -104,10 +99,13 @@ const Hero: React.FC = () => {
               >
                 {/* Know Us More */}
                 <motion.button
-                  onClick={() => router.push(`/`)}
-                  whileHover={{
-                    scale: 1.05,
+                  onClick={() => {
+                    const aboutSection = document.getElementById('about-us');
+                    if (aboutSection) {
+                      aboutSection.scrollIntoView({ behavior: 'smooth' });
+                    }
                   }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="btn-primary group inline-flex items-center justify-center px-6 py-3 text-white font-semibold rounded-lg shadow-md transition-all"
                 >
@@ -117,14 +115,17 @@ const Hero: React.FC = () => {
 
                 {/* Our Solutions */}
                 <motion.button
-                  onClick={() => router.push(`/solutions`)}
-                  whileHover={{
-                    scale: 1.05,
+                  onClick={() => {
+                    const valuesSection = document.getElementById('values');
+                    if (valuesSection) {
+                      valuesSection.scrollIntoView({ behavior: 'smooth' });
+                    }
                   }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="btn-secondary group inline-flex items-center justify-center px-6 py-3 text-white font-semibold rounded-lg shadow-md transition-all"
                 >
-                  <span className="text-sm lg:text-base">Our Solutions</span>
+                  <span className="text-sm lg:text-base">Our Core Values</span>
                 </motion.button>
               </motion.div>
             </motion.div>

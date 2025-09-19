@@ -13,7 +13,9 @@ import OurPresenceSection from '@/components/GlobalPresence';
 import SleekFooter from '@/components/Footer';
 import GroupCompaniesSection from '@/components/GroupCompanies';
 import PartnersSection from '@/components/PartnerSection';
-
+import OurTeam from '@/components/OurTeam';
+import OurFacilitiesSection from './OurFacilities';
+import AwardsSection from './Awards';
 export default function HomeClient() {
   return (
     <main className="bg-gray-50 text-gray-800">
@@ -22,9 +24,12 @@ export default function HomeClient() {
       <AboutUsSection />
       <IndustryCarousel />
       <AboutUs />
+      <OurTeam />
+      <OurFacilitiesSection />
       <OurValues />
       <CSRSection />
       <EventSection />
+      <AwardsSection/>
       <PartnersSection />
       <GroupCompaniesSection />
       <OurPresenceSection />

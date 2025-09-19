@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // 👇 If your app is served under /til (e.g. example.com/til)
   basePath: '',
   assetPrefix: '',
 
