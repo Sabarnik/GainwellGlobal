@@ -102,7 +102,7 @@ export default function AboutUsSection() {
           >
             <div className="relative rounded-xl overflow-hidden shadow-xl h-64 sm:h-80 md:h-96 lg:h-[480px]">
               <Image
-                src={`${basePath}/technology.jpeg`}
+                src={`${basePath}/Story-Wall-1.jpg`}
                 alt="Gainwell Heavy Equipment"
                 fill
                 className="object-cover"

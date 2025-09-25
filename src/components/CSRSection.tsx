@@ -1,14 +1,19 @@
 // components/CSRGridSection.tsx
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
+
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export default function CSRGridSection() {
-  const [activeSet, setActiveSet] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0); // Start at 0 for actual first slide
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   // CSR initiatives data with brand colors from guidelines
   const csrData = [
@@ -59,11 +64,32 @@ export default function CSRGridSection() {
     },
   ];
 
-  // Group data into sets of 3 for the 3-grid layout
-  const groupedData = [];
-  for (let i = 0; i < csrData.length; i += 3) {
-    groupedData.push(csrData.slice(i, i + 3));
-  }
+  // Create sets of up to 3 items, but fill incomplete sets with existing items
+  const createGroupedData = () => {
+    const grouped = [];
+    for (let i = 0; i < csrData.length; i += 3) {
+      const set = csrData.slice(i, i + 3);
+      // If this is the last set and it has less than 3 items, fill with items from the beginning
+      if (set.length < 3) {
+        const needed = 3 - set.length;
+        set.push(...csrData.slice(0, needed));
+      }
+      grouped.push(set);
+    }
+    return grouped;
+  };
+
+  const groupedData = createGroupedData();
+
+  // Create infinite carousel data by cloning first and last items
+  const carouselData = [
+    groupedData[groupedData.length - 1], // Clone last set to beginning
+    ...groupedData,
+    groupedData[0], // Clone first set to end
+  ];
+
+  const totalSlides = carouselData.length;
+
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -71,7 +97,7 @@ export default function CSRGridSection() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           setIsVisible(true);
         }
       },
@@ -85,31 +111,65 @@ export default function CSRGridSection() {
     };
   }, []);
 
+  // Clean up interval on unmount
+  useEffect(() => {
+    return () => {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+      }
+    };
+  }, []);
+
+  // Handle transition end for infinite loop
+  const handleTransitionEnd = useCallback(() => {
+    setIsTransitioning(false);
+    
+    // If we're at the last clone (index totalSlides - 1), jump to the real first slide (index 1)
+    if (activeIndex === totalSlides - 1) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setActiveIndex(1);
+      }, 50);
+    }
+    // If we're at the first clone (index 0), jump to the real last slide (index totalSlides - 2)
+    else if (activeIndex === 0) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setActiveIndex(totalSlides - 2);
+      }, 50);
+    }
+  }, [activeIndex, totalSlides]);
+
   // Auto-play carousel with hover pause
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current);
+    }
+
     if (isVisible && !isHovering) {
-      interval = setInterval(() => {
-        setActiveSet((prev) => (prev + 1) % groupedData.length);
+      autoPlayRef.current = setInterval(() => {
+        setIsTransitioning(true);
+        setActiveIndex((prev) => (prev + 1) % totalSlides);
       }, 5000);
     }
 
     return () => {
-      if (interval) clearInterval(interval);
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+      }
     };
-  }, [groupedData.length, isVisible, isHovering]);
+  }, [isVisible, isHovering, totalSlides]);
 
-  const handlePrev = () => {
-    setActiveSet(activeSet === 0 ? groupedData.length - 1 : activeSet - 1);
-  };
+  // Navigation functions with infinite loop
+  const handlePrev = useCallback(() => {
+    setIsTransitioning(true);
+    setActiveIndex((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
+  }, [totalSlides]);
 
-  const handleNext = () => {
-    setActiveSet((activeSet + 1) % groupedData.length);
-  };
-
-  const goToSlide = (index: number) => {
-    setActiveSet(index);
-  };
+  const handleNext = useCallback(() => {
+    setIsTransitioning(true);
+    setActiveIndex((prev) => (prev + 1) % totalSlides);
+  }, [totalSlides]);
 
   return (
     <section
@@ -146,7 +206,7 @@ export default function CSRGridSection() {
           </p>
         </div>
 
-        {/* 3-Grid Auto Slide Section */}
+        {/* 3-Grid Infinite Carousel Section */}
         <div 
           className="relative overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-100"
           onMouseEnter={() => setIsHovering(true)}
@@ -154,17 +214,22 @@ export default function CSRGridSection() {
         >
           {/* Grid track */}
           <div
-            className="transition-transform duration-700 ease-in-out flex"
-            style={{ transform: `translateX(-${activeSet * 100}%)` }}
+            ref={trackRef}
+            className="flex"
+            style={{ 
+              transform: `translateX(-${activeIndex * 100}%)`,
+              transition: isTransitioning ? 'transform 700ms ease-in-out' : 'none'
+            }}
+            onTransitionEnd={handleTransitionEnd}
           >
-            {groupedData.map((set, setIndex) => (
+            {carouselData.map((set, setIndex) => (
               <div
                 key={setIndex}
                 className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-8 p-8"
               >
                 {set.map((item, itemIndex) => (
                   <div 
-                    key={item.id} 
+                    key={`${setIndex}-${item.id}`} 
                     className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 transition-all duration-300 hover:shadow-xl flex flex-col h-full"
                     style={{ borderTop: `5px solid ${item.color}` }}
                   >
@@ -176,7 +241,7 @@ export default function CSRGridSection() {
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        priority={itemIndex === 0 && setIndex === 0}
+                        priority={itemIndex === 0 && setIndex === 1}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                       <div className="absolute top-5 left-5 w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-lg">
@@ -219,6 +284,7 @@ export default function CSRGridSection() {
             onClick={handlePrev}
             className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
             aria-label="Previous CSR initiatives"
+            type="button"
           >
             <i className="fas fa-chevron-left text-lg group-hover:scale-110 transition-transform duration-200"></i>
           </button>
@@ -226,28 +292,10 @@ export default function CSRGridSection() {
             onClick={handleNext}
             className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
             aria-label="Next CSR initiatives"
+            type="button"
           >
             <i className="fas fa-chevron-right text-lg group-hover:scale-110 transition-transform duration-200"></i>
           </button>
-
-          {/* Indicators */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
-            {groupedData.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-500 ease-in-out ${index === activeSet ? 'bg-gradient-to-r from-[#F5872E] to-[#3A55A5] scale-125' : 'bg-gray-300'}`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Current slide indicator */}
-        <div className="flex justify-end items-center mt-6 px-2">
-          <div className="text-base text-[#3A55A5] font-medium">
-            {activeSet + 1} / {groupedData.length}
-          </div>
         </div>
       </div>
 

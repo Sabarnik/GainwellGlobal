@@ -1,7 +1,8 @@
 // components/AboutSection.tsx
 'use client';
-import { useCallback } from 'react';
-import { useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef, useMemo } from 'react';
+import Image from "next/image";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 // Define decade type
 interface Decade {
@@ -16,172 +17,247 @@ interface TimelineEvent {
   icon: string;
   color: string;
   bgColor: string;
+  image: string;
 }
 
 export default function AboutUs() {
   const [activeDecadeIndex, setActiveDecadeIndex] = useState(0);
+  const [activeEventIndex, setActiveEventIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [rotation, setRotation] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
+  const eventIntervalRef = useRef<number | null>(null);
 
-  // Timeline data organized by decades
-  const decadesData: Decade[] = [
-    {
-      name: "1940s",
-      years: ["1944"],
-      events: [
-        {
-          year: "1944",
-          content: "We started our operations at 6 Church Lane, Calcutta as Dealer for Caterpillar, US",
-          icon: "fas fa-flag",
-          color: "from-[#F5872E] to-[#FFA057]",
-          bgColor: "bg-orange-100"
-        }
-      ]
-    },
-    {
-      name: "1960s",
-      years: ["1960"],
-      events: [
-        {
-          year: "1960",
-          content: "Enters Joint Venture with Coles Cranes Company Ltd.",
-          icon: "fas fa-handshake",
-          color: "from-[#3A55A5] to-[#4A6BC5]",
-          bgColor: "bg-blue-100"
-        }
-      ]
-    },
-    {
-      name: "1970s",
-      years: ["1976"],
-      events: [
-        {
-          year: "1976",
-          content: "We expanded our horizons beyond Indian borders, forging new agreements to extend our services to Nepal and Bhutan",
-          icon: "fas fa-globe",
-          color: "from-[#40A748] to-[#50C758]",
-          bgColor: "bg-green-100"
-        }
-      ]
-    },
-    {
-      name: "1980s",
-      years: ["1985"],
-      events: [
-        {
-          year: "1985",
-          content: "Changes its name to become TIL Limited",
-          icon: "fas fa-signature",
-          color: "from-[#F5872E] to-[#FFA057]",
-          bgColor: "bg-orange-100"
-        }
-      ]
-    },
-    {
-      name: "1990s",
-      years: ["1996", "1998"],
-      events: [
-        {
-          year: "1996",
-          content: "Ties up with National Cranes USA",
-          icon: "fas fa-link",
-          color: "from-[#3A55A5] to-[#4A6BC5]",
-          bgColor: "bg-blue-100"
-        },
-        {
-          year: "1998",
-          content: "Ties up with Manitowoc, USA",
-          icon: "fas fa-handshake",
-          color: "from-[#40A748] to-[#50C758]",
-          bgColor: "bg-green-100"
-        }
-      ]
-    },
-    {
-      name: "2000s",
-      years: ["2000"],
-      events: [
-        {
-          year: "2000",
-          content: "Established our First subsidiary in Nepal through wholly owned, Tractors Nepal Private Limited",
-          icon: "fas fa-building",
-          color: "from-[#F5872E] to-[#FFA057]",
-          bgColor: "bg-orange-100"
-        }
-      ]
-    },
-    {
-      name: "2010s",
-      years: ["2010", "2013", "2017", "2019"],
-      events: [
-        {
-          year: "2010",
-          content: "We incorporated Tractors India Pvt. Ltd.",
-          icon: "fas fa-indian-rupee-sign",
-          color: "from-[#3A55A5] to-[#4A6BC5]",
-          bgColor: "bg-blue-100"
-        },
-        {
-          year: "2013",
-          content: "TIL Receives L.N Birla Memorial Award for Corporate Excellence",
-          icon: "fas fa-award",
-          color: "from-[#40A748] to-[#50C758]",
-          bgColor: "bg-green-100"
-        },
-        {
-          year: "2017",
-          content: "Tulip Compression becomes part of Gainwell Group",
-          icon: "fas fa-compress",
-          color: "from-[#F5872E] to-[#FFA057]",
-          bgColor: "bg-orange-100"
-        },
-        {
-          year: "2019",
-          content: "Completes 75 years of existence on 22nd July 2019",
-          icon: "fas fa-birthday-cake",
-          color: "from-[#3A55A5] to-[#4A6BC5]",
-          bgColor: "bg-blue-100"
-        }
-      ]
-    },
-    {
-      name: "2020s",
-      years: ["2021", "2022", "2023", "2024"],
-      events: [
-        {
-          year: "2021",
-          content: "Gainwell Engineering formed and Engineering signs licensing agreement with Caterpillar to manufacture underground mining equipment in India for global market",
-          icon: "fas fa-industry",
-          color: "from-[#40A748] to-[#50C758]",
-          bgColor: "bg-green-100"
-        },
-        {
-          year: "2022",
-          content: "Gainwell and Lintec & Linnhoff signed new manufacturing partnership to Make in India",
-          icon: "fas fa-handshake",
-          color: "from-[#F5872E] to-[#FFA057]",
-          bgColor: "bg-orange-100"
-        },
-        {
-          year: "2023",
-          content: "Gainwell and Etnyre Signed new Partnership. Acceleron Solutions formed as specialised Services in IT services and consulting Services",
-          icon: "fas fa-laptop-code",
-          color: "from-[#3A55A5] to-[#4A6BC5]",
-          bgColor: "bg-blue-100"
-        },
-        {
-          year: "2024",
-          content: "Gainwell Group acquires Iconic Infra Equipment Manufacturer – TIL Limited",
-          icon: "fas fa-arrow-trend-up",
-          color: "from-[#40A748] to-[#50C758]",
-          bgColor: "bg-green-100"
-        }
-      ]
-    }
-  ];
+  // Check if device is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
+
+  // Timeline data organized by decades - updated with content from the document
+  const decadesData: Decade[] = useMemo(() => {
+    return [
+      {
+        name: "1940s",
+        years: ["1944"],
+        events: [
+          {
+            year: "1944",
+            content: "From 6 Church Lane, Calcutta — a bold beginning to transforming India's industrial future.",
+            icon: "fas fa-flag",
+            color: "from-[#F5872E] to-[#FFA057]",
+            bgColor: "bg-orange-100",
+            image: `${basePath}/Story-Wall-1.jpg`,
+          }
+        ]
+      },
+      {
+        name: "1950s",
+        years: ["1944-1953", "1956"],
+        events: [
+          {
+            year: "1944-1953",
+            content: "Powering India's Progress: Dozers, graders, and loaders — paving the way by introducing heavy machinery to a young and ambitious independent India.",
+            icon: "fas fa-truck",
+            color: "from-[#3A55A5] to-[#4A6BC5]",
+            bgColor: "bg-blue-100",
+            image: `${basePath}/Story-Wall-2.jpg`,
+          },
+          {
+            year: "1956",
+            content: "Serving the Nation's Need: From refugee resettlement to rebuilding infrastructure, our machines helped shape a resilient post-independence India.",
+            icon: "fas fa-hands-helping",
+            color: "from-[#40A748] to-[#50C758]",
+            bgColor: "bg-green-100",
+            image: `${basePath}/Story-Wall-3.jpg`
+          }
+        ]
+      },
+      {
+        name: "1970s",
+        years: ["1971", "1976"],
+        events: [
+          {
+            year: "1971",
+            content: "Made in India, Backed by Caterpillar: Local manufacturing begins — enabling faster delivery, greater self-reliance, and a deeper impact on India's industrial growth.",
+            icon: "fas fa-industry",
+            color: "from-[#F5872E] to-[#FFA057]",
+            bgColor: "bg-orange-100",
+            image: `${basePath}/Story-Wall-4.jpg`,
+          },
+          {
+            year: "1976",
+            content: "Across Borders, Beyond Limits: Expanding into Nepal and Bhutan, our machines knew no borders, carrying progress and reliability across geographies.",
+            icon: "fas fa-globe",
+            color: "from-[#3A55A5] to-[#4A6BC5]",
+            bgColor: "bg-blue-100",
+            image: `${basePath}/Story-Wall-5.jpg`
+          }
+        ]
+      },
+      {
+        name: "1980s",
+        years: ["1985"],
+        events: [
+          {
+            year: "1985",
+            content: "Diversified Strength: We stepped beyond construction — into power, oil, gas, and specialised off-highway sectors — expanding our capabilities.",
+            icon: "fas fa-expand",
+            color: "from-[#40A748] to-[#50C758]",
+            bgColor: "bg-green-100",
+            image: `${basePath}/Story-Wall-6.jpg`
+          }
+        ]
+      },
+      {
+        name: "1990s",
+        years: ["1994", "1998"],
+        events: [
+          {
+            year: "1994",
+            content: "50 Years of Trust: Half a century with Caterpillar — a partnership built on trust, powered by performance, and driven by a shared commitment to excellence.",
+            icon: "fas fa-award",
+            color: "from-[#F5872E] to-[#FFA057]",
+            bgColor: "bg-orange-100",
+            image: `${basePath}/Story-Wall-7.jpg`
+          },
+          {
+            year: "1998",
+            content: "Digital Awakening: Adopted digital diagnostics early, setting a new benchmark for service excellence with faster troubleshooting and proactive maintenance.",
+            icon: "fas fa-microchip",
+            color: "from-[#3A55A5] to-[#4A6BC5]",
+            bgColor: "bg-blue-100",
+            image: `${basePath}/Story-Wall-8.jpg`
+          }
+        ]
+      },
+      {
+        name: "2000s",
+        years: ["2000-2010", "2009"],
+        events: [
+          {
+            year: "2000-2010",
+            content: "Momentum Builds: As India progressed, so did we, with the launch of the country's first Caterpillar Rental Store and the incorporation of Tractors India Pvt. Ltd (TIPL).",
+            icon: "fas fa-rocket",
+            color: "from-[#40A748] to-[#50C758]",
+            bgColor: "bg-green-100",
+            image: `${basePath}/Story-Wall-9.jpg`
+          },
+          {
+            year: "2009",
+            content: "Our 3 CRCs — Vantages for Customer Support: From Asansol to Greater Noida and Udaipur, our state-of-the-art Component Rebuild Centers delivered standout service experience.",
+            icon: "fas fa-tools",
+            color: "from-[#F5872E] to-[#FFA057]",
+            bgColor: "bg-orange-100",
+            image: `${basePath}/Story-Wall-10.jpg`
+          }
+        ]
+      },
+      {
+        name: "2010s",
+        years: ["2016", "2017", "2018", "2019"],
+        events: [
+          {
+            year: "2016",
+            content: "Gainwell Is Born: TIPL emerged as an independent force — Gainwell. We redefined our vision with renewed purpose and guided by enduring core values.",
+            icon: "fas fa-seedling",
+            color: "from-[#3A55A5] to-[#4A6BC5]",
+            bgColor: "bg-blue-100",
+            image: `${basePath}/Story-Wall-11.jpg`
+          },
+          {
+            year: "2016",
+            content: "CSR — The Art of Giving Back: We began our CSR journey with a strong commitment to community care, partnering with NGOs for skill development, education, and healthcare.",
+            icon: "fas fa-hand-holding-heart",
+            color: "from-[#40A748] to-[#50C758]",
+            bgColor: "bg-green-100",
+            image: `${basePath}/Story-Wall-12.jpg`
+          },
+          {
+            year: "2017",
+            content: "Srijan — For a Unified, Cohesive Organisation: A landmark workshop that united the Gainwell family, fostering trust, respect, and a culture of togetherness.",
+            icon: "fas fa-users",
+            color: "from-[#F5872E] to-[#FFA057]",
+            bgColor: "bg-orange-100",
+            image: `${basePath}/Story-Wall-13.jpg`
+          },
+          {
+            year: "2018",
+            content: "First Low-Height Miner in India: Introduced India's first low-height Continuous Miner — transforming underground mining with safer, efficient, low-seam operations.",
+            icon: "fas fa-hard-hat",
+            color: "from-[#3A55A5] to-[#4A6BC5]",
+            bgColor: "bg-blue-100",
+            image: `${basePath}/Story-Wall-14.jpg`
+          },
+          {
+            year: "2019",
+            content: "Launch of UNNATI: Our Greater Noida facility redefined sustainable manufacturing with zero-emission, zero-waste practices — earning LEED Platinum V4 certification.",
+            icon: "fas fa-leaf",
+            color: "from-[#40A748] to-[#50C758]",
+            bgColor: "bg-green-100",
+            image: `${basePath}/Story-Wall-15.jpg`
+          }
+        ]
+      },
+      {
+        name: "2020s",
+        years: ["2020-2022", "2023", "2025"],
+        events: [
+          {
+            year: "2020-2022",
+            content: "Pandemic Response & People First: Amid the pandemic, we cared for our people, supported partners, and stood by our communities.",
+            icon: "fas fa-heartbeat",
+            color: "from-[#F5872E] to-[#FFA057]",
+            bgColor: "bg-orange-100",
+            image: `${basePath}/Story-Wall-16.jpg`
+          },
+          {
+            year: "2023",
+            content: "Rebuild, Reman, Recreate: A Sustainable Dream: A testament to our unmatched capability and engineering excellence, giving world-class mining machines new life in India.",
+            icon: "fas fa-recycle",
+            color: "from-[#3A55A5] to-[#4A6BC5]",
+            bgColor: "bg-blue-100",
+            image: `${basePath}/Story-Wall-17.jpg`
+          },
+          {
+            year: "2025",
+            content: "A Digital Revolution — Redefining Customer Experience: We fast-tracked our digital journey with innovations like Samriddhi, FSM, and Customer Connect.",
+            icon: "fas fa-digital-tachograph",
+            color: "from-[#40A748] to-[#50C758]",
+            bgColor: "bg-green-100",
+            image: `${basePath}/Story-Wall-18.jpg`
+          },
+          {
+            year: "2025",
+            content: "Conquering Greater Heights: We proudly unveiled our highest office in Leh — 3,500 metres above sea level — expanding our reach to serve at altitudes up to 4,500 metres.",
+            icon: "fas fa-mountain",
+            color: "from-[#F5872E] to-[#FFA057]",
+            bgColor: "bg-orange-100",
+            image: `${basePath}/Story-Wall-19.jpg`
+          },
+          {
+            year: "2025",
+            content: "Ranked 49 among India's Best Places to Work: Certified seven years in a row, we take pride in our people-first culture and commitment to diversity.",
+            icon: "fas fa-trophy",
+            color: "from-[#3A55A5] to-[#4A6BC5]",
+            bgColor: "bg-blue-100",
+            image: `${basePath}/Story-Wall-20.jpg`
+          }
+        ]
+      }
+    ];
+  }, []);
 
   // Calculate rotation angle based on active decade index
   const calculateRotation = useCallback((index: number) => {
@@ -209,18 +285,74 @@ export default function AboutUs() {
   }, []);
 
   // Auto-play carousel with hover pause
+  // Auto-play carousel with hover pause (decades)
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isVisible && !isHovering) {
-      interval = setInterval(() => {
+    let intervalId: number | null = null;
+
+    console.debug('[Timeline] autoplay effect run:', { isVisible, isHovering, isMobile });
+
+    if (isVisible && !isHovering && !isMobile) {
+      intervalId = window.setInterval(() => {
         setActiveDecadeIndex((prev) => (prev + 1) % decadesData.length);
       }, 4000);
+      console.debug('[Timeline] autoplay started (decades)', intervalId);
     }
 
     return () => {
-      if (interval) clearInterval(interval);
+      if (intervalId !== null) {
+        window.clearInterval(intervalId);
+        console.debug('[Timeline] autoplay cleared (decades)', intervalId);
+      }
     };
-  }, [decadesData.length, isVisible, isHovering]);
+  }, [decadesData.length, isVisible, isHovering, isMobile]);
+
+
+  // Auto-rotate events within a decade
+  // Auto-rotate events within a decade
+  useEffect(() => {
+    // clear any previous
+    if (eventIntervalRef.current !== null) {
+      window.clearInterval(eventIntervalRef.current);
+      eventIntervalRef.current = null;
+      console.debug('[Timeline] cleared previous event interval');
+    }
+
+    // Reset event index when decade changes
+    setActiveEventIndex(0);
+    console.debug('[Timeline] activeDecadeIndex', activeDecadeIndex, 'events', decadesData[activeDecadeIndex]?.events.length);
+
+    const currentDecade = decadesData[activeDecadeIndex];
+    if (currentDecade && currentDecade.events.length > 1 && isVisible && !isHovering && !isMobile) {
+      const intervalTime = currentDecade.events.length > 2 ? 6000 : 5000;
+
+      eventIntervalRef.current = window.setInterval(() => {
+        setActiveEventIndex((prev) => {
+          const next = (prev + 1) % currentDecade.events.length;
+          console.debug('[Timeline] event auto-advance', { from: prev, to: next, decade: currentDecade.name });
+          return next;
+        });
+      }, intervalTime);
+
+      console.debug('[Timeline] event interval started', eventIntervalRef.current, 'intervalTime', intervalTime);
+    } else {
+      console.debug('[Timeline] event auto-rotate not started (conditions):', {
+        isVisible,
+        isHovering,
+        isMobile,
+        events: currentDecade?.events.length ?? 0
+      });
+    }
+
+    return () => {
+      if (eventIntervalRef.current !== null) {
+        window.clearInterval(eventIntervalRef.current);
+        console.debug('[Timeline] cleared event interval on cleanup', eventIntervalRef.current);
+        eventIntervalRef.current = null;
+      }
+    };
+  }, [activeDecadeIndex, isVisible, isHovering, isMobile, decadesData]);
+
+
 
   // Update rotation when activeDecadeIndex changes
   useEffect(() => {
@@ -239,13 +371,24 @@ export default function AboutUs() {
     setActiveDecadeIndex(index);
   };
 
+  const handlePrevEvent = () => {
+    const currentDecade = decadesData[activeDecadeIndex];
+    setActiveEventIndex(activeEventIndex === 0 ? currentDecade.events.length - 1 : activeEventIndex - 1);
+  };
+
+  const handleNextEvent = () => {
+    const currentDecade = decadesData[activeDecadeIndex];
+    setActiveEventIndex((activeEventIndex + 1) % currentDecade.events.length);
+  };
+
   const currentDecade = decadesData[activeDecadeIndex];
+  const currentEvent = currentDecade.events[activeEventIndex];
 
   return (
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden"
+      className="relative py-10 md:py-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -259,20 +402,20 @@ export default function AboutUs() {
         <div className={`absolute bottom-1/4 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-[#40A748]/20 to-transparent transform transition-all duration-1000 delay-500 ease-out ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}></div>
       </div>
 
-      <div className="container max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Section Header */}
         <div
-          className={`text-center mb-16 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+          className={`text-center mb-10 md:mb-16 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
         >
-          <h2 className="text-4xl md:text-5xl font-din font-bold text-[#08193C] relative inline-block">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-din font-bold text-[#08193C] relative inline-block">
             <span className="relative">
               The Wheel Of Time
               <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-300 ease-out origin-left scale-x-0"></span>
               <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}></span>
             </span>
           </h2>
-          <p className="mt-6 text-lg text-[#3A55A5] font-roboto max-w-2xl mx-auto transition-all duration-1000 delay-700 ease-out">
+          <p className="mt-4 md:mt-6 text-base md:text-lg text-[#3A55A5] font-roboto max-w-2xl mx-auto transition-all duration-1000 delay-700 ease-out">
             Our journey through decades of innovation, partnerships, and growth.
           </p>
         </div>
@@ -353,7 +496,7 @@ export default function AboutUs() {
           </div>
 
           {/* Description Panel - Right Side */}
-          <div 
+          <div
             className="w-1/2"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
@@ -373,22 +516,67 @@ export default function AboutUs() {
                   {currentDecade.events.length} Event{currentDecade.events.length !== 1 ? 's' : ''}
                 </div>
               </div>
-              
-              {/* All events for the decade */}
-              <div className="space-y-6 max-h-96 overflow-y-auto pr-2">
-                {currentDecade.events.map((event, index) => (
-                  <div key={index} className="flex items-start">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${event.bgColor} mr-4 shadow-md flex-shrink-0`}>
-                      <i className={`${event.icon} text-lg ${event.color.replace('from-', 'text-').split(' ')[0]}`}></i>
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-din font-bold text-[#08193C]">{event.year}</h4>
-                      <p className="text-[#3A55A5] font-roboto leading-relaxed mt-1">
-                        {event.content}
-                      </p>
-                    </div>
+
+              {/* Event display with auto-slide for multiple events */}
+              <div className="relative">
+                {/* Event Image */}
+                <Image
+                  key={currentEvent.image}
+                  src={currentEvent.image}
+                  alt={currentEvent.year}
+                  width={800}
+                  height={1000}
+                  className="w-full h-[400px] md:h-[500px] object-cover rounded-lg"
+                  loading="lazy"
+                />
+
+
+                {/* Event content */}
+                <div className="flex items-start mt-4">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${currentEvent.bgColor} mr-4 shadow-md flex-shrink-0`}>
+                    <i className={`${currentEvent.icon} text-lg ${currentEvent.color.replace('from-', 'text-').split(' ')[0]}`}></i>
                   </div>
-                ))}
+                  <div>
+                    <h4 className="text-xl font-din font-bold text-[#08193C]">{currentEvent.year}</h4>
+                    <p className="text-[#3A55A5] font-roboto leading-relaxed mt-1">
+                      {currentEvent.content}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Event navigation for decades with multiple events */}
+                {currentDecade.events.length > 1 && (
+                  <div className="flex justify-center mt-6 space-x-4">
+                    <button
+                      onClick={handlePrevEvent}
+                      className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-colors duration-300"
+                      aria-label="Previous event"
+                    >
+                      <i className="fas fa-chevron-left text-sm"></i>
+                    </button>
+
+                    {/* Event indicator */}
+                    <div className="flex items-center">
+                      <div className="flex space-x-1">
+                        {currentDecade.events.map((_, index) => (
+                          <div
+                            key={index}
+                            className={`w-2 h-2 rounded-full transition-all duration-300 ${index === activeEventIndex ? 'bg-[#3A55A5] scale-125' : 'bg-gray-300'
+                              }`}
+                          ></div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleNextEvent}
+                      className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-colors duration-300"
+                      aria-label="Next event"
+                    >
+                      <i className="fas fa-chevron-right text-sm"></i>
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Progress indicator */}
@@ -407,88 +595,135 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* Mobile Vertical Timeline Carousel - Visible on mobile */}
-        <div 
-          className={`lg:hidden relative transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-        >
-          {/* Carousel container */}
-          <div
-            className="relative overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-100"
-          >
-            {/* Vertical carousel track */}
-            <div
-              className="transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateY(-${activeDecadeIndex * 100}%)` }}
-            >
+        {/* Mobile Layout - Visible on mobile and tablet */}
+        <div className="lg:hidden">
+          {/* Mobile Decade Selector - Horizontal Scroll */}
+          <div className="mb-6 overflow-x-auto pb-2">
+            <div className="flex space-x-3 px-1">
               {decadesData.map((decade, index) => (
-                <div
-                  key={index}
-                  className="w-full flex-shrink-0 px-6 py-8"
-                >
-                  <div className="text-center mb-6">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-[#3A55A5] to-[#40A748] text-white mb-4 shadow-lg">
-                      <span className="text-lg font-bold">{decade.name}</span>
-                    </div>
-                    <h3 className="text-xl font-din font-bold text-[#08193C]">
-                      {decade.name}
-                    </h3>
-                  </div>
-                  
-                  {/* All events for the decade */}
-                  <div className="space-y-6">
-                    {decade.events.map((event, eventIndex) => (
-                      <div key={eventIndex} className="flex items-start">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${event.bgColor} mr-4 shadow-md flex-shrink-0`}>
-                          <i className={`${event.icon} text-lg ${event.color.replace('from-', 'text-').split(' ')[0]}`}></i>
-                        </div>
-                        <div>
-                          <h4 className="text-xl font-din font-bold text-[#08193C]">{event.year}</h4>
-                          <p className="text-[#3A55A5] font-roboto leading-relaxed mt-1">
-                            {event.content}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Navigation buttons */}
-            <button
-              onClick={handlePrev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-colors duration-300 z-10"
-              aria-label="Previous decade"
-            >
-              <i className="fas fa-chevron-left"></i>
-            </button>
-            <button
-              onClick={handleNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-colors duration-300 z-10"
-              aria-label="Next decade"
-            >
-              <i className="fas fa-chevron-right"></i>
-            </button>
-
-            {/* Indicators */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex justify-center space-x-2">
-              {decadesData.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToDecade(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-500 ease-in-out ${index === activeDecadeIndex ? 'bg-gradient-to-b from-[#F5872E] to-[#3A55A5] scale-125' : 'bg-gray-300'}`}
-                  aria-label={`Go to ${decadesData[index].name}`}
-                />
+                  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ${index === activeDecadeIndex
+                    ? 'bg-gradient-to-r from-[#3A55A5] to-[#40A748] text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                >
+                  {decade.name}
+                </button>
               ))}
             </div>
           </div>
 
-          {/* Current decade indicator */}
-          <div className="flex justify-end items-center mt-4 px-2">
-            <div className="text-sm text-[#3A55A5] font-roboto">
-              {activeDecadeIndex + 1} / {decadesData.length}
+          {/* Mobile Content */}
+          <div
+            className="bg-white rounded-xl p-5 shadow-lg border border-gray-100"
+            onTouchStart={() => setIsHovering(true)}
+            onTouchEnd={() => setIsHovering(false)}
+          >
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-2xl font-din font-bold text-[#08193C]">{currentDecade.name}</h3>
+              <div className="text-xs text-[#3A55A5] font-roboto bg-gray-100 px-2 py-1 rounded-full">
+                {currentDecade.events.length} Event{currentDecade.events.length !== 1 ? 's' : ''}
+              </div>
+            </div>
+
+            {/* Event display with auto-slide for multiple events */}
+            <div className="relative">
+              {/* Event Image */}
+              <div className="mb-4 rounded-lg overflow-hidden shadow-md">
+                <div className="mb-4 rounded-lg overflow-hidden shadow-md">
+                  <Image
+                    key={currentEvent.image}
+                    src={currentEvent.image}
+                    alt={`${currentEvent.year} - ${currentDecade.name}`}
+                    width={800}
+                    height={480}
+                    className="w-full h-48 md:h-64 object-cover rounded-lg"
+                    priority={false}
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+
+              {/* Event content */}
+              <div className="flex items-start">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${currentEvent.bgColor} mr-3 shadow-md flex-shrink-0`}>
+                  <i className={`${currentEvent.icon} text-base ${currentEvent.color.replace('from-', 'text-').split(' ')[0]}`}></i>
+                </div>
+                <div>
+                  <h4 className="text-lg font-din font-bold text-[#08193C]">{currentEvent.year}</h4>
+                  <p className="text-sm text-[#3A55A5] font-roboto leading-relaxed mt-1">
+                    {currentEvent.content}
+                  </p>
+                </div>
+              </div>
+
+              {/* Event navigation for decades with multiple events */}
+              {currentDecade.events.length > 1 && (
+                <div className="flex justify-center mt-5 space-x-3">
+                  <button
+                    onClick={handlePrevEvent}
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-colors duration-300"
+                    aria-label="Previous event"
+                  >
+                    <i className="fas fa-chevron-left text-xs"></i>
+                  </button>
+
+                  {/* Event indicator */}
+                  <div className="flex items-center">
+                    <div className="flex space-x-1">
+                      {currentDecade.events.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${index === activeEventIndex ? 'bg-[#3A55A5] scale-125' : 'bg-gray-300'
+                            }`}
+                        ></div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleNextEvent}
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-colors duration-300"
+                    aria-label="Next event"
+                  >
+                    <i className="fas fa-chevron-right text-xs"></i>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between items-center mt-6">
+              <button
+                onClick={handlePrev}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-colors duration-300"
+                aria-label="Previous decade"
+              >
+                <i className="fas fa-chevron-left text-sm"></i>
+              </button>
+
+              {/* Progress indicator */}
+              <div className="flex items-center">
+                <div className="w-24 bg-gray-200 rounded-full h-1.5 mr-2">
+                  <div
+                    className="h-1.5 rounded-full bg-gradient-to-r from-[#3A55A5] to-[#40A748] transition-all duration-500 ease-out"
+                    style={{ width: `${((activeDecadeIndex + 1) / decadesData.length) * 100}%` }}
+                  ></div>
+                </div>
+                <div className="text-xs text-[#3A55A5] font-roboto">
+                  {activeDecadeIndex + 1} / {decadesData.length}
+                </div>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-colors duration-300"
+                aria-label="Next decade"
+              >
+                <i className="fas fa-chevron-right text-sm"></i>
+              </button>
             </div>
           </div>
         </div>

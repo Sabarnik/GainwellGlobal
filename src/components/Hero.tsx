@@ -1,14 +1,13 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 const Hero: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
-
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -20,22 +19,34 @@ const Hero: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  const toggleVideoPlayback = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  };
+
   return (
     <section id="home" className="relative h-screen overflow-hidden">
-      {/* Video Background */}
+      {/* Video Background with direct click handler */}
       <video
-        className="absolute inset-0 w-full h-full object-cover"
+        ref={videoRef}
+        className="absolute inset-0 w-full h-full object-cover cursor-pointer"
         src={`${basePath}/hero_bg_video.mp4`}
         autoPlay
         loop
         muted
         playsInline
+        onClick={toggleVideoPlayback}
       />
 
-      {/* Text Content - Aligned with navbar container */}
-      <div className="relative z-30 container max-w-7xl mx-auto px-4 h-full">
-        <div className="h-full mb-20 flex items-center pt-36    ">
-          <div className={`${isMobile ? 'w-full flex justify-center' : 'w-full lg:w-1/2'}`}>
+      {/* Text Content - Make sure it doesn't block clicks */}
+      <div className="relative z-30 container max-w-7xl mx-auto px-4 h-full pointer-events-none">
+        <div className="h-full mb-20 flex items-center pt-36">
+          <div className={`${isMobile ? 'w-full flex justify-center' : 'w-full lg:w-1/2'} pointer-events-auto`}>
             <motion.div
               className={`space-y-6 ${isMobile ? 'max-w-none w-full text-center px-4' : 'max-w-2xl'}`}
               initial={{ opacity: 0, x: -60 }}
@@ -57,16 +68,16 @@ const Hero: React.FC = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.9 }}
                   >
-                    GAINWELL
+                    SOLUTIONS
                   </motion.span>
                   <motion.span
-                    className="block text-gainwell-orange"
+                    className="block text-6xl text-gainwell-orange"
                     style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.9)' }}
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 1.1 }}
                   >
-                    GROUP
+                    FOR GROWTH
                   </motion.span>
                   <motion.span
                     className="block text-white text-2xl md:text-3xl lg:text-4xl font-light"
@@ -75,7 +86,6 @@ const Hero: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 1.3 }}
                   >
-                    Solutions for Growth
                   </motion.span>
                 </h1>
 

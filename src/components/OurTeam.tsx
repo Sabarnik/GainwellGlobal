@@ -105,14 +105,14 @@ export default function OurTeamSection() {
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {teamMembers.map((member, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          {teamMembers.slice(0, 3).map((member, index) => (
             <div
               key={member.id}
-              className={`bg-white rounded-xl overflow-hidden shadow-md border border-gray-100 transition-all duration-700 ease-out hover:scale-[1.02] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+              className={`bg-white rounded-xl overflow-hidden shadow-md border border-gray-100 transition-all duration-700 ease-out hover:scale-[1.02] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              {/* Rounded Image Container */}
               <div className="relative w-full aspect-square overflow-hidden p-6">
                 <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-gray-100 shadow-md">
                   <Image
@@ -120,12 +120,11 @@ export default function OurTeamSection() {
                     alt={member.name}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
                   />
                 </div>
               </div>
-              
-              {/* Content Container - Simplified */}
+
               <div className="p-6 text-center pt-0">
                 <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
                 <p className="text-[#3A55A5] font-medium">{member.position}</p>
@@ -133,6 +132,37 @@ export default function OurTeamSection() {
             </div>
           ))}
         </div>
+
+        {/* Bottom row: center the remaining members as a group (like Services) */}
+        {teamMembers.length > 3 && (
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-8 max-w-4xl mx-auto">
+            {teamMembers.slice(3).map((member, idx) => (
+              <div
+                key={member.id}
+                className={`bg-white rounded-xl overflow-hidden shadow-md border border-gray-100 transition-all duration-700 ease-out hover:scale-[1.02] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                  } w-full sm:w-1/3`}
+                style={{ transitionDelay: `${(idx + 3) * 100}ms` }}
+              >
+                <div className="relative w-full aspect-square overflow-hidden p-6">
+                  <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-gray-100 shadow-md">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-6 text-center pt-0">
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
+                  <p className="text-[#3A55A5] font-medium">{member.position}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Add subtle background elements */}

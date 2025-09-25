@@ -3,7 +3,7 @@
 
 import HeaderWrapper from '@/components/HeaderWrapper';
 import Hero from '@/components/Hero';
-import AboutUsSection from '@/components/AboutUsSection';
+// import AboutUsSection from '@/components/AboutUsSection';
 import AboutUs from '@/components/AboutSection';
 import IndustryCarousel from '@/components/Industry';
 import OurValues from '@/components/OurValues';
@@ -16,15 +16,17 @@ import PartnersSection from '@/components/PartnerSection';
 import OurTeam from '@/components/OurTeam';
 import OurFacilitiesSection from './OurFacilities';
 import AwardsSection from './Awards';
+import LinkedInAdSection from './LinkedInAdSection';
 export default function HomeClient() {
   return (
     <main className="bg-gray-50 text-gray-800">
       <HeaderWrapper />
       <Hero />
-      <AboutUsSection />
+      {/* <AboutUsSection /> */}
       <IndustryCarousel />
       <AboutUs />
       <OurTeam />
+      <LinkedInAdSection />
       <OurFacilitiesSection />
       <OurValues />
       <CSRSection />

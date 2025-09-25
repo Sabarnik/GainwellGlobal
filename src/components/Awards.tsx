@@ -234,25 +234,7 @@ export default function AwardsSection() {
           </div>
         </div>
 
-        {/* Stats Section */}
-        <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 transition-all duration-1000 delay-500 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <div className="bg-white rounded-xl p-6 shadow-lg text-center">
-            <div className="text-4xl font-bold text-[#3A55A5] mb-2">{awards.length}+</div>
-            <div className="text-sm text-[#08193C]">Awards Received</div>
-          </div>
-          <div className="bg-white rounded-xl p-6 shadow-lg text-center">
-            <div className="text-4xl font-bold text-[#F5872E] mb-2">15+</div>
-            <div className="text-sm text-[#08193C]">Years of Recognition</div>
-          </div>
-          <div className="bg-white rounded-xl p-6 shadow-lg text-center">
-            <div className="text-4xl font-bold text-[#40A748] mb-2">8+</div>
-            <div className="text-sm text-[#08193C]">Categories</div>
-          </div>
-          <div className="bg-white rounded-xl p-6 shadow-lg text-center">
-            <div className="text-4xl font-bold text-[#3ABEEE] mb-2">12+</div>
-            <div className="text-sm text-[#08193C]">Recognizing Organizations</div>
-          </div>
-        </div>
+    
       </div>
 
       {/* Add subtle background elements */}

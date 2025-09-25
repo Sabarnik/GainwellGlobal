@@ -2,11 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  basePath: '',
+  basePath: '/gainwellglobal',
   assetPrefix: '',
 
   env: {
-    NEXT_PUBLIC_BASE_PATH: '',
+    NEXT_PUBLIC_BASE_PATH: '/gainwellglobal',
   },
 
   images: {
