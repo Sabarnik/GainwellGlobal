@@ -24,6 +24,8 @@ interface IndustryModalProps {
 }
 
 const IndustryModal: React.FC<IndustryModalProps> = ({ isOpen, onClose, industry }) => {
+    const [hoveredCompany, setHoveredCompany] = useState<number | null>(null);
+    
     // Handle ESC key press
     useEffect(() => {
         const handleEscKey = (event: KeyboardEvent) => {
@@ -98,12 +100,12 @@ const IndustryModal: React.FC<IndustryModalProps> = ({ isOpen, onClose, industry
                     {
                         src: `${basePath}/acceleron.png`,
                         description: 'Acceleron Solutions is committed to delivering tailored IT solutions that drive business transformation and growth. With a focus on IT infrastructure, cloud services, and cybersecurity, we help our clients navigate the complexities of the digital world.',
-                        learnMoreLink: 'https://www.sitechindia-ne.com/'
+                        learnMoreLink: 'https://www.acceleronsolutions.io/'
                     },
                     {
                         src: `${basePath}/sitech.png`,
                         description: 'SITECH India -NE is an authorized channel partner of Trimble for their Heavy Construction Technology products. SITECH India-NE brings an exciting range of new technology to the Indian construction market.',
-                        learnMoreLink: 'https://example.com/technology/stech-solutions'
+                        learnMoreLink: 'https://www.sitechindia-ne.com/'
                     }
                 )
                 break
@@ -170,26 +172,49 @@ const IndustryModal: React.FC<IndustryModalProps> = ({ isOpen, onClose, industry
     }
 
     const logos = getCompanyLogos(industry.title)
-   
-
-    // Calculate dynamic height based on number of items
-  
-    // const modalHeight = getModalHeight()
 
     return (
-        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm pt-4 pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div
-                className="relative bg-white rounded-2xl max-w-7xl w-full mx-4 flex flex-col max-h-[calc(100vh-40px)]"
+                className="relative bg-gradient-to-b from-white to-gray-50 rounded-2xl max-w-6xl w-full mx-auto overflow-hidden shadow-2xl max-h-[90vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
             >
+                {/* Background decorations matching GroupCompanies exactly */}
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute -top-40 -left-40 w-80 h-80 bg-[#3A55A5]/5 rounded-full blur-3xl animate-pulse-slow"></div>
+                    <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-[#F5872E]/5 rounded-full blur-3xl animate-pulse-slow delay-1000"></div>
+                </div>
+
+                {/* Floating particles exactly like GroupCompanies */}
+                <div className="absolute inset-0">
+                    {[...Array(15)].map((_, i) => (
+                        <div
+                            key={i}
+                            className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-[#3A55A5]/20 to-[#F5872E]/20"
+                            style={{
+                                top: `${Math.random() * 100}%`,
+                                left: `${Math.random() * 100}%`,
+                                animation: `float ${15 + Math.random() * 15}s infinite ease-in-out`,
+                                animationDelay: `${Math.random() * 5}s`,
+                            }}
+                        ></div>
+                    ))}
+                </div>
+
                 {/* Header with Close Button */}
-                <div className="bg-gradient-to-r from-[#F5872E] to-[#3A55A5] p-6 text-white relative flex-shrink-0">
-                    <h2 className="text-3xl font-bold">{industry.title} Solutions</h2>
+                <div className="relative z-10 p-8 text-center border-b border-gray-200/50 bg-white/80 backdrop-blur-sm">
+                    <h2 className="text-4xl font-bold text-[#08193C] mb-4 relative inline-block">
+                        <span className="relative z-10">{industry.title} Solutions</span>
+                        <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out scale-x-100`}></span>
+                    </h2>
+                    <p className="text-lg text-[#3A55A5] max-w-2xl mx-auto">
+                        Discover our comprehensive solutions in the {industry.title.toLowerCase()} sector
+                    </p>
 
                     {/* Close Button */}
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/20 text-white hover:bg-white/30 transition-all duration-300 flex items-center justify-center"
+                        className="absolute top-6 right-6 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm text-gray-600 hover:bg-white hover:text-[#F5872E] transition-all duration-300 flex items-center justify-center shadow-lg border border-gray-200/50"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -197,42 +222,75 @@ const IndustryModal: React.FC<IndustryModalProps> = ({ isOpen, onClose, industry
                     </button>
                 </div>
 
-                {/* Content - All items visible without scrolling */}
-                <div className="flex-1 p-8 overflow-y-auto">
-                    <div className="space-y-6 h-full">
+                {/* Content - Grid Layout exactly like GroupCompanies */}
+                <div className="relative z-10 p-8 flex-1 overflow-y-auto">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 relative z-20">
                         {logos.map((logo, index) => (
-                            <div key={index} className="flex items-center gap-8 py-6 px-6 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                            <div
+                                key={index}
+                                className="relative group transition-all duration-700 ease-out translate-y-0 opacity-100"
+                                onMouseEnter={() => setHoveredCompany(index)}
+                                onMouseLeave={() => setHoveredCompany(null)}
+                            >
+                                <div className="relative flex flex-col items-center transition-all duration-300 group-hover:scale-105">
+                                    {/* Logo Container - Exact same as GroupCompanies */}
+                                    <a 
+                                        href={logo.learnMoreLink} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="block"
+                                    >
+                                        <div className="relative w-36 h-36 md:w-44 md:h-44 transition-all duration-300 group-hover:scale-110">
+                                            {/* Gradient background on hover */}
+                                            <div
+                                                className={`absolute inset-0 rounded-full bg-gradient-to-br from-[#3A55A5] to-[#4A6BC5] opacity-0 group-hover:opacity-10 transition-opacity duration-300 -z-10`}
+                                            ></div>
+                                            {/* Background circle */}
+                                            <div className="absolute inset-0 rounded-full bg-gray-100/50 group-hover:bg-gray-100/80 transition-colors duration-300 -z-10"></div>
+                                            {/* Logo image container */}
+                                            <div className="relative w-full h-full rounded-full overflow-hidden p-4">
+                                                <Image
+                                                    src={logo.src}
+                                                    alt={logo.description.slice(0, 60)}
+                                                    fill
+                                                    className="object-contain transition-all duration-300 group-hover:drop-shadow-xl"
+                                                    sizes="(max-width: 768px) 144px, 176px"
+                                                />
+                                            </div>
+                                        </div>
+                                    </a>
 
-
-                                {/* Logo Image — no white box */}
-                                <div className="flex-shrink-0 flex items-center justify-center w-32 h-32">
-                                    <Image
-                                        src={logo.src}
-                                        alt={logo.description?.slice(0, 60) ?? 'company logo'}
-                                        width={128}
-                                        height={128}
-                                        className="object-contain"
-                                    />
-                                </div>
-
-                                {/* Content */}
-                                <div className="flex-1 flex flex-col justify-between h-full">
-                                    <p className="text-gray-700 leading-relaxed text-base line-clamp-4">
-                                        {logo.description}
-                                    </p>
-
-                                    {/* Learn More Button aligned to right */}
-                                    <div className="flex justify-end mt-2">
-                                        <a
-                                            href={logo.learnMoreLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 font-semibold hover:text-[#F5872E] transition-colors duration-300"
+                                    {/* Learn More Button - Always visible below the logo */}
+                                    <a 
+                                        href={logo.learnMoreLink} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="mt-4 text-[#3A55A5] font-semibold hover:text-[#F5872E] transition-colors duration-300 flex items-center gap-2 group/link"
+                                    >
+                                        Learn More
+                                        <svg 
+                                            className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" 
+                                            fill="none" 
+                                            stroke="currentColor" 
+                                            viewBox="0 0 24 24"
                                         >
-                                            Learn More
-                                        </a>
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                    </a>
 
-
+                                    {/* Description Dropdown - Exact same behavior as GroupCompanies */}
+                                    <div className={`
+                                        w-full mt-2 overflow-hidden transition-all duration-500 ease-in-out
+                                        ${hoveredCompany === index 
+                                          ? 'max-h-32 opacity-100 translate-y-0' 
+                                          : 'max-h-0 opacity-0 -translate-y-2'
+                                        }
+                                    `}>
+                                        <div className="bg-white/80 backdrop-blur-sm rounded-lg p-3 shadow-sm border border-gray-200/50">
+                                            <p className="text-sm text-gray-700 text-center leading-relaxed">
+                                                {logo.description}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -244,6 +302,7 @@ const IndustryModal: React.FC<IndustryModalProps> = ({ isOpen, onClose, industry
     )
 }
 
+// ... Rest of the IndustryCarousel component remains exactly the same ...
 const IndustryCarousel: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [isHovering, setIsHovering] = useState(false)
@@ -585,6 +644,30 @@ const IndustryCarousel: React.FC = () => {
                 onClose={closeModal}
                 industry={selectedIndustry || industries[0]}
             />
+
+            <style jsx global>{`
+                @keyframes float {
+                    0%,
+                    100% {
+                        transform: translateY(0) rotate(0deg);
+                    }
+                    50% {
+                        transform: translateY(-20px) rotate(10deg);
+                    }
+                }
+                @keyframes pulse-slow {
+                    0%,
+                    100% {
+                        opacity: 0.5;
+                    }
+                    50% {
+                        opacity: 0.8;
+                    }
+                }
+                .animate-pulse-slow {
+                    animation: pulse-slow 6s infinite ease-in-out;
+                }
+            `}</style>
         </>
     )
 }

@@ -212,16 +212,8 @@ export default function AboutUs() {
       },
       {
         name: "2020s",
-        years: ["2020-2022", "2023", "2025"],
+        years: ["2023", "2024", "2025"],
         events: [
-          {
-            year: "2020-2022",
-            content: "Pandemic Response & People First: Amid the pandemic, we cared for our people, supported partners, and stood by our communities.",
-            icon: "fas fa-heartbeat",
-            color: "from-[#F5872E] to-[#FFA057]",
-            bgColor: "bg-orange-100",
-            image: `${basePath}/Story-Wall-16.jpg`
-          },
           {
             year: "2023",
             content: "Rebuild, Reman, Recreate: A Sustainable Dream: A testament to our unmatched capability and engineering excellence, giving world-class mining machines new life in India.",
@@ -229,6 +221,14 @@ export default function AboutUs() {
             color: "from-[#3A55A5] to-[#4A6BC5]",
             bgColor: "bg-blue-100",
             image: `${basePath}/Story-Wall-17.jpg`
+          },
+          {
+            year: "2024",
+            content: "TIL Acquisition: Acquired by Gainwell Group through its group entity Indocrest Defence Services Private Limited (IDSPL) and a new management team is apponted.",
+            icon: "fas fa-recycle",
+            color: "from-[#3A55A5] to-[#4A6BC5]",
+            bgColor: "bg-blue-100",
+            image: `${basePath}/TIL a.jfif`
           },
           {
             year: "2025",
@@ -381,8 +381,11 @@ export default function AboutUs() {
     setActiveEventIndex((activeEventIndex + 1) % currentDecade.events.length);
   };
 
-  const currentDecade = decadesData[activeDecadeIndex];
-  const currentEvent = currentDecade.events[activeEventIndex];
+  const currentDecade = decadesData?.[activeDecadeIndex] ?? decadesData?.[0] ?? null;
+  const currentEvent =
+    currentDecade?.events?.[activeEventIndex] ??
+    currentDecade?.events?.[0] ??
+    null;
 
   return (
     <section

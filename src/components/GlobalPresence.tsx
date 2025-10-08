@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,27 +14,61 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
   
-// Create custom icon with SVG and optional pulsing ring for active
-const createCustomIcon = (color: string, isActive: boolean = false) => {
-  const size = isActive ? 42 : 32;
-  const pulse = isActive
-    ? `<span class="pulse-ring" style="box-shadow: 0 0 0 0 ${color};"></span>`
+// Create modern sleek custom icon
+const createCustomIcon = (color: string, isActive: boolean = false, label: string = '') => {
+  const size = isActive ? 52 : 42;
+  const initials = label.substring(0, 2).toUpperCase();
+  const pulseRing = isActive
+    ? `<div class="pulse-ring" style="border: 2px solid ${color};"></div>`
     : '';
 
   const svg = `
     <div class="marker-wrap" style="position:relative;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;">
-      ${pulse}
-      <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24">
-        <path fill="${color}" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-        <circle fill="white" cx="12" cy="9" r="3"/>
-        <circle fill="${color}" cx="12" cy="9" r="1.5"/>
-      </svg>
+      ${pulseRing}
+      <div class="marker-main" style="
+        width: ${size}px;
+        height: ${size}px;
+        background: ${color};
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1);
+        border: 3px solid white;
+        position: relative;
+        transition: all 0.3s ease;
+      ">
+        <div style="
+          transform: rotate(45deg);
+          color: white;
+          font-weight: 700;
+          font-size: ${size / 3}px;
+          font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+          letter-spacing: 0.5px;
+        ">${initials}</div>
+      </div>
+      ${isActive ? `
+        <div class="glow-effect" style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: ${size * 1.8}px;
+          height: ${size * 1.8}px;
+          background: radial-gradient(circle, ${color}40 0%, transparent 70%);
+          transform: translate(-50%, -50%);
+          border-radius: 50%;
+          z-index: -1;
+          animation: glow 2s ease-in-out infinite alternate;
+        "></div>
+      ` : ''}
     </div>
   `;
 
   return new L.DivIcon({
     html: svg,
-    className: 'custom-marker',
+    className: `custom-marker ${isActive ? 'marker-active' : ''}`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size],
   });
@@ -77,11 +111,11 @@ export default function OurPresenceSection() {
           },
           { 
             name: 'Resurgent Mining Solutions Pvt Ltd', 
-            address: '1 Tranxilla Road, Garden Resch, Kolkata 700024, West Bengal' 
+            address: '1 Taratolla Road, Garden Reach, Kolkata 700024, West Bengal' 
           },
           { 
             name: 'TIL Ltd', 
-            address: 'Unit No. 802, BHPoor, Kalash Building, 26 Kasrurba Gandhi Marg, New Delhi – 110001' 
+            address: 'Unit No. 802, 8th Floor, Kailash Building, 26 Kasturba Gandhi Marg, New Delhi – 110001' 
           },
         ],
         color: brandColors.primaryOrange,
@@ -190,6 +224,21 @@ export default function OurPresenceSection() {
     return () => observer.disconnect();
   }, []);
 
+  // Auto-pan / flyTo on location select
+  useEffect(() => {
+    if (!mapRef.current) return;
+    
+    if (activeLocation == null) {
+      mapRef.current.flyTo([20, 0], 2, { animate: true, duration: 0.9 });
+      return;
+    }
+    
+    const loc = locations.find(l => l.id === activeLocation);
+    if (loc) {
+      mapRef.current.flyTo(loc.coordinates, 4.5, { animate: true, duration: 0.9 });
+    }
+  }, [activeLocation, locations]);
+
   const handleLocationClick = useCallback((id: number) => {
     setActiveLocation((prev) => (prev === id ? null : id));
   }, []);
@@ -262,8 +311,8 @@ export default function OurPresenceSection() {
               attributionControl={false}
             >
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
               />
 
               {/* Markers */}
@@ -271,17 +320,34 @@ export default function OurPresenceSection() {
                 <Marker
                   key={location.id}
                   position={location.coordinates}
-                  icon={createCustomIcon(location.color, activeLocation === location.id)}
+                  icon={createCustomIcon(location.color, activeLocation === location.id, location.country)}
                   eventHandlers={{
                     click: () => handleLocationClick(location.id),
+                    mouseover: (e) => {
+                      e.target.openTooltip();
+                    },
+                    mouseout: (e) => {
+                      if (activeLocation !== location.id) {
+                        e.target.closeTooltip();
+                      }
+                    },
                   }}
-                />
+                >
+                  <Tooltip 
+                    direction="top" 
+                    offset={[0, -12]}
+                    permanent={activeLocation === location.id}
+                  >
+                    <div className="text-sm font-semibold text-gray-800">{location.country}</div>
+                    <div className="text-xs text-gray-600">{location.offices.length} office{location.offices.length !== 1 ? 's' : ''}</div>
+                  </Tooltip>
+                </Marker>
               ))}
             </MapContainer>
 
             {/* subtle attribution */}
             <div className="absolute bottom-3 left-3 text-xs bg-white/80 px-2 py-1 rounded-md shadow-sm text-gray-700">
-              Map: Leaflet + OpenStreetMap
+              Map: CARTO + OpenStreetMap
             </div>
           </motion.div>
 
@@ -292,7 +358,7 @@ export default function OurPresenceSection() {
             transition={{ duration: 0.9, delay: 0.2 }}
             className="h-full"
           >
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-gray-100 h-full flex flex-col">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-gray-100 h-full flex flex-col">
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <h3 className="text-2xl font-bold text-[#08193C]">Office Addresses</h3>
@@ -301,9 +367,10 @@ export default function OurPresenceSection() {
 
                 {/* Country switcher */}
                 <select
-                  className="bg-gray-50 border border-gray-200 text-sm text-[#3A55A5] px-3 py-2 rounded-lg shadow-sm"
+                  className="bg-gray-50 border border-gray-200 text-sm text-[#3A55A5] px-3 py-2 rounded-lg shadow-sm min-h-[40px] focus:ring-2 focus:ring-[#3A55A5] focus:border-transparent transition-all duration-200"
                   value={active?.id ?? ''}
                   onChange={(e) => setActiveLocation(e.target.value ? Number(e.target.value) : null)}
+                  aria-label="Select a country to view office addresses"
                 >
                   <option value="">Select a country…</option>
                   {locations.map((l) => (
@@ -328,14 +395,17 @@ export default function OurPresenceSection() {
                     >
                       <div className="flex items-center">
                         <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4 ring-4 ring-white shadow"
-                          style={{ backgroundColor: active.color }}
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4 ring-4 ring-white shadow-lg"
+                          style={{ 
+                            backgroundColor: active.color,
+                            background: `linear-gradient(135deg, ${active.color} 0%, ${active.color}DD 100%)`
+                          }}
                         >
                           {active.country.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
                           <h4 className="text-xl font-bold text-[#08193C]">{active.country}</h4>
-                          <p className="text-sm text-gray-500">{active.offices.length} office(s)</p>
+                          <p className="text-sm text-gray-500">{active.offices.length} office{active.offices.length !== 1 ? 's' : ''}</p>
                         </div>
                       </div>
 
@@ -348,21 +418,22 @@ export default function OurPresenceSection() {
                               initial={{ opacity: 0, x: -6 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: idx * 0.05 }}
-                              className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50"
+                              className="flex flex-col gap-2 p-4 rounded-xl bg-white/50 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200"
                             >
                               <div className="flex items-start gap-3">
-                                <span
-                                  className="mt-1 inline-block w-3 h-3 rounded-full flex-shrink-0"
+                                <div
+                                  className="w-3 h-3 rounded-full flex-shrink-0 mt-1.5 shadow"
                                   style={{ backgroundColor: active.color }}
                                 />
-                                <div>
-                                  <div className="font-medium text-[#08193C]">{o.name}</div>
-                                  <div className="text-sm text-[#3A55A5]">{o.address}</div>
+                                <div className="flex-1">
+                                  <div className="font-semibold text-[#08193C] text-sm">{o.name}</div>
+                                  <div className="text-xs text-gray-600 mt-1 leading-relaxed">{o.address}</div>
                                 </div>
                               </div>
                               <button 
-                                className="self-end px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 transition-colors flex items-center gap-1"
+                                className="self-end px-4 py-2 bg-gradient-to-r from-[#3A55A5] to-[#F5872E] text-white rounded-lg text-sm font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center gap-2 min-h-[40px] shadow-md"
                                 onClick={() => getDirections(active.coordinates, o.address)}
+                                aria-label={`Get directions to ${o.name} in ${active.country}`}
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -390,7 +461,7 @@ export default function OurPresenceSection() {
                             <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                           </svg>
                         </div>
-                        <p className="text-[#3A55A5]">Select a country on the map to see office addresses.</p>
+                        <p className="text-[#3A55A5] font-medium">Select a country on the map to see office addresses.</p>
                       </div>
                     </motion.div>
                   )}
@@ -404,14 +475,26 @@ export default function OurPresenceSection() {
                   {locations.map((location) => (
                     <button
                       key={location.id}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out shadow-sm flex items-center gap-2 ${
-                        activeLocation === location.id ? 'text-white' : 'bg-gray-50 text-[#3A55A5] hover:bg-gray-100'
+                      className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ease-out shadow-sm flex items-center gap-2 min-h-[40px] border border-transparent hover:shadow-md transform hover:scale-105 ${
+                        activeLocation === location.id 
+                          ? 'text-white shadow-lg scale-105' 
+                          : 'bg-white/50 text-[#3A55A5] hover:bg-white/80 border-gray-200'
                       }`}
-                      style={{ backgroundColor: activeLocation === location.id ? location.color : undefined }}
+                      style={{ 
+                        backgroundColor: activeLocation === location.id ? location.color : undefined,
+                        background: activeLocation === location.id 
+                          ? `linear-gradient(135deg, ${location.color} 0%, ${location.color}DD 100%)`
+                          : undefined
+                      }}
                       onClick={() => handleLocationClick(location.id)}
+                      aria-label={`View offices in ${location.country}`}
+                      aria-pressed={activeLocation === location.id}
                     >
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: location.color }} />
-                      <span>{location.country}</span>
+                      <span 
+                        className="w-2.5 h-2.5 rounded-full shadow" 
+                        style={{ backgroundColor: location.color }} 
+                      />
+                      <span className="font-semibold">{location.country}</span>
                     </button>
                   ))}
                 </div>
@@ -422,34 +505,105 @@ export default function OurPresenceSection() {
       </div>
 
       <style jsx global>{`
-        .custom-marker { background: transparent !important; border: none !important; }
-        .leaflet-popup-content-wrapper { border-radius: 8px; }
-        .leaflet-control-attribution { font-size: 10px; background: rgba(255,255,255,0.9) !important; color: #333 !important; }
+        .custom-marker { 
+          background: transparent !important; 
+          border: none !important; 
+        }
+        
+        .leaflet-popup-content-wrapper { 
+          border-radius: 12px; 
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .leaflet-control-attribution { 
+          font-size: 10px; 
+          background: rgba(255,255,255,0.9) !important; 
+          color: #333 !important; 
+        }
+        
         .leaflet-control-attribution a { color: #0078A8 !important; }
 
-        /* Pulse ring for active marker */
-        .marker-wrap { position: relative; }
-        .marker-wrap .pulse-ring {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          left: 0;
-          top: 0;
-          border-radius: 9999px;
-          transform: translate(-0%, -0%);
-          animation: pulse 1.8s infinite;
-          opacity: 0.7;
-          filter: blur(6px);
+        /* Modern marker animations */
+        .marker-wrap { 
+          position: relative; 
+          transition: all 0.3s ease;
+          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
         }
 
-        @keyframes pulse {
-          0% { transform: scale(0.7); opacity: 0.75; }
-          70% { transform: scale(1.6); opacity: 0.12; }
-          100% { transform: scale(2); opacity: 0; }
+        .marker-active .marker-wrap {
+          filter: drop-shadow(0 8px 20px rgba(0,0,0,0.25));
+          z-index: 1000;
+        }
+
+        .marker-main {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .marker-active .marker-main {
+          transform: rotate(-45deg) scale(1.1);
+        }
+
+        /* Sleek pulse ring for active marker */
+        .pulse-ring {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+          animation: sleek-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          opacity: 0.6;
+        }
+
+        @keyframes sleek-pulse {
+          0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.6;
+          }
+          50% {
+            transform: translate(-50%, -50%) scale(1.3);
+            opacity: 0.2;
+          }
+        }
+
+        /* Glow effect */
+        @keyframes glow {
+          0% {
+            opacity: 0.4;
+            transform: translate(-50%, -50%) scale(0.8);
+          }
+          100% {
+            opacity: 0.8;
+            transform: translate(-50%, -50%) scale(1.2);
+          }
+        }
+
+        /* Improve tooltip styling */
+        .leaflet-tooltip {
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.8);
+          border-radius: 8px;
+          box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15), 0 4px 12px -2px rgba(0, 0, 0, 0.1);
+          padding: 8px 12px;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .leaflet-tooltip-top:before {
+          border-top-color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Smooth hover effects */
+        .custom-marker:hover .marker-main {
+          transform: rotate(-45deg) scale(1.05);
+          filter: brightness(1.1);
         }
 
         /* smaller tweaks */
-        .leaflet-container { font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+        .leaflet-container { 
+          font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; 
+        }
       `}</style>
     </section>
   );

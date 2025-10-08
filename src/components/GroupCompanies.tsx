@@ -18,6 +18,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 export default function GroupCompaniesSection() {
   const [isVisible, setIsVisible] = useState(false);
+  const [hoveredCompany, setHoveredCompany] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const companies: Company[] = [
@@ -36,16 +37,16 @@ export default function GroupCompaniesSection() {
       logo: `${basePath}/acceleron1.png`,
       description:
         "Gainwell Group's tech arm that offers software support, IT infrastructure, cloud services, and cybersecurity.",
-      website: 'https://www.acceleronsolutions.com',
+      website: 'https://acceleronsolutions.io/',
       color: 'from-[#F5872E] to-[#FFA057]',
     },
     {
       id: 3,
       name: 'TIL Limited',
-      logo: `${basePath}/team2.png`,
+      logo: `${basePath}/tractors-india.png`,
       description:
         "Supports India's infrastructure with advanced material handling and lifting solutions.",
-      website: 'https://www.tillimited.com',
+      website: 'https://tilindia.in/',
       color: 'from-[#40A748] to-[#50C758]',
     },
     {
@@ -54,7 +55,7 @@ export default function GroupCompaniesSection() {
       logo: `${basePath}/team3.png`,
       description:
         'Part of Gainwell Group, engaged in manufacturing of capital goods in mining, railways and other heavy industry sectors.',
-      website: 'https://www.gainwellengineering.com',
+      website: 'https://www.gainwellengineering.com/index-india.html',
       color: 'from-[#3ABEEE] to-[#4AD0FF]',
     },
     {
@@ -63,7 +64,7 @@ export default function GroupCompaniesSection() {
       logo: `${basePath}/team5.png`,
       description:
         'A subsidiary of Gainwell Commosales Pvt. Ltd., with over 20 years of experience in servicing Cat equipment in Nepal.',
-      website: 'https://www.tractorsnepal.com',
+      website: 'http://www.tractorsnepal.com/',
       color: 'from-[#405A2A] to-[#318741]',
     },
     {
@@ -72,27 +73,26 @@ export default function GroupCompaniesSection() {
       logo: `${basePath}/team6.png`,
       description:
         'Specializes in industrial compression solutions and services for various sectors including energy and manufacturing.',
-      website: 'https://www.tulipcompression.com',
+      website: 'https://www.tulipcompression.com/about-us.html',
       color: 'from-[#405A2A] to-[#318741]',
     },
   ];
 
-useEffect(() => {
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) setIsVisible(true);
-    },
-    { threshold: 0.1 }
-  );
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold: 0.1 }
+    );
 
-  const currentSection = sectionRef.current; // ✅ copy to variable
+    const currentSection = sectionRef.current; // ✅ copy to variable
 
-  if (currentSection) observer.observe(currentSection);
-  return () => {
-    if (currentSection) observer.unobserve(currentSection);
-  };
-}, []);
-
+    if (currentSection) observer.observe(currentSection);
+    return () => {
+      if (currentSection) observer.unobserve(currentSection);
+    };
+  }, []);
 
   return (
     <section
@@ -130,10 +130,8 @@ useEffect(() => {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-[#08193C] mb-4 relative inline-block">
             <span className="relative z-10">Our Group Companies</span>
-            <span
-              className={`absolute -bottom-2 left-0 w-full h-2 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transform origin-left transition-all duration-1000 delay-500 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'
-                }`}
-            ></span>
+           <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-300 ease-out origin-left scale-x-0"></span>
+                <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}></span>
           </h2>
           <p className="mt-4 text-lg text-[#3A55A5] max-w-2xl mx-auto">
             A diverse portfolio of companies working together to deliver comprehensive solutions
@@ -148,52 +146,42 @@ useEffect(() => {
               className={`relative group transition-all duration-700 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
                 }`}
               style={{ transitionDelay: `${index * 100}ms` }}
+              onMouseEnter={() => setHoveredCompany(company.id)}
+              onMouseLeave={() => setHoveredCompany(null)}
             >
               <Link href={company.website} target="_blank" rel="noopener noreferrer">
-                <div className="relative flex flex-col items-center transition-all duration-500 group-hover:scale-105">
-                  {/* Logo */}
-                  <div className="relative w-36 h-36 md:w-44 md:h-44 transition-all duration-500 group-hover:scale-110">
+                <div className="relative flex flex-col items-center transition-all duration-300 group-hover:scale-105">
+                  {/* Logo Container */}
+                  <div className="relative w-36 h-36 md:w-44 md:h-44 transition-all duration-300 group-hover:scale-110">
                     <div
-                      className={`absolute inset-0 rounded-full bg-gradient-to-br ${company.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 -z-10`}
+                      className={`absolute inset-0 rounded-full bg-gradient-to-br ${company.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300 -z-10`}
                     ></div>
-                    <div className="absolute inset-0 rounded-full bg-gray-100/50 group-hover:bg-gray-100/80 transition-colors duration-500 -z-10"></div>
+                    <div className="absolute inset-0 rounded-full bg-gray-100/50 group-hover:bg-gray-100/80 transition-colors duration-300 -z-10"></div>
                     <div className="relative w-full h-full rounded-full overflow-hidden p-4">
                       <Image
                         src={company.logo}
                         alt={company.name}
                         fill
-                        className="object-contain transition-all duration-500 group-hover:drop-shadow-xl"
+                        className="object-contain transition-all duration-300 group-hover:drop-shadow-xl"
                         sizes="(max-width: 768px) 144px, 176px"
                       />
                     </div>
                   </div>
 
-                  {/* Removed company name */}
-
-                  {/* Hover Overlay ON the Logo */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center rounded-full bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out text-center p-4">
-                    <p className="text-white text-sm leading-relaxed">
-                      {company.description}
-                    </p>
-                    <div className="mt-2 flex items-center justify-center">
-                      <span className="text-xs text-white font-medium mr-1">Visit website</span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
+                  {/* Description Dropdown */}
+                  <div className={`
+                    w-full mt-4 overflow-hidden transition-all duration-500 ease-in-out
+                    ${hoveredCompany === company.id 
+                      ? 'max-h-32 opacity-100 translate-y-0' 
+                      : 'max-h-0 opacity-0 -translate-y-2'
+                    }
+                  `}>
+                    <div className="bg-white/80 backdrop-blur-sm rounded-lg p-3 shadow-sm border border-gray-200/50">
+                      <p className="text-sm text-gray-700 text-center leading-relaxed">
+                        {company.description}
+                      </p>
                     </div>
                   </div>
-
                 </div>
               </Link>
             </div>

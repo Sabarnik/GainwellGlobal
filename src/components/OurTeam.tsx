@@ -1,4 +1,3 @@
-// components/OurTeamSection.tsx
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
@@ -16,12 +15,13 @@ export default function OurTeamSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
+  // GMC members (requested list)
   const teamMembers: TeamMember[] = [
     {
       id: 1,
       name: 'Mr. Sunil Kumar Chaturvedi',
       position: 'Chairman & Managing Director',
-      image: `${basePath}/sunil-kumar.png`,
+      image: `${basePath}/skc.jpg`,
     },
     {
       id: 2,
@@ -37,15 +37,27 @@ export default function OurTeamSection() {
     },
     {
       id: 4,
-      name: 'Mr. Khalifa Al-Ghanim',
-      position: 'Director',
-      image: `${basePath}/khalifa.jpg`,
+      name: 'Mr. Dipankar Banerjee',
+      position: 'Whole Time Director GEPL',
+      image: `${basePath}/DB.png`,
     },
     {
       id: 5,
-      name: 'Mr. Anis Mokadem',
-      position: 'Director',
-      image: `${basePath}/anis_mkdm_rsz.jpg`,
+      name: 'Mr. Sujoy Banerjee',
+      position: 'Group Chief People Officer, Group Head Marketing & Group Head Corporate Communications & Public Relations',
+      image: `${basePath}/sujoy.jpg`,
+    },
+    {
+      id: 6,
+      name: 'Mr. Saikat Bardhan',
+      position: 'Company Secretary & Group Head-Legal, Compliance & Internal Audit',
+      image: `${basePath}/saikat.jpg`,
+    },
+    {
+      id: 7,
+      name: 'Mr. Ayan Banerjee',
+      position: 'Whole Time Director TIL',
+      image: `${basePath}/AyanBanerjee.png`,
     },
   ];
 
@@ -71,7 +83,7 @@ export default function OurTeamSection() {
 
   return (
     <section
-      id="our-team"
+      id="gmc-team"
       ref={sectionRef}
       className="relative py-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden"
     >
@@ -94,23 +106,21 @@ export default function OurTeamSection() {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-[#08193C] relative inline-block">
             <span className="relative">
-              Our Leadership Team
-              <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-300 ease-out origin-left scale-x-0"></span>
+              Gainwell Management Committee (GMC)
               <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}></span>
             </span>
           </h2>
           <p className="mt-6 text-lg text-[#3A55A5] max-w-2xl mx-auto transition-all duration-1000 delay-700 ease-out">
-            Meet the experienced professionals driving our vision forward with expertise and dedication.
+            Meet the GMC members — core leadership driving Gainwell & group strategy.
           </p>
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-          {teamMembers.slice(0, 3).map((member, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          {teamMembers.map((member, index) => (
             <div
               key={member.id}
-              className={`bg-white rounded-xl overflow-hidden shadow-md border border-gray-100 transition-all duration-700 ease-out hover:scale-[1.02] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                }`}
+              className={`bg-white rounded-xl overflow-hidden shadow-md border border-gray-100 transition-all duration-700 ease-out hover:scale-[1.02] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               <div className="relative w-full aspect-square overflow-hidden p-6">
@@ -132,37 +142,6 @@ export default function OurTeamSection() {
             </div>
           ))}
         </div>
-
-        {/* Bottom row: center the remaining members as a group (like Services) */}
-        {teamMembers.length > 3 && (
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-8 max-w-4xl mx-auto">
-            {teamMembers.slice(3).map((member, idx) => (
-              <div
-                key={member.id}
-                className={`bg-white rounded-xl overflow-hidden shadow-md border border-gray-100 transition-all duration-700 ease-out hover:scale-[1.02] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                  } w-full sm:w-1/3`}
-                style={{ transitionDelay: `${(idx + 3) * 100}ms` }}
-              >
-                <div className="relative w-full aspect-square overflow-hidden p-6">
-                  <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-gray-100 shadow-md">
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  </div>
-                </div>
-
-                <div className="p-6 text-center pt-0">
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
-                  <p className="text-[#3A55A5] font-medium">{member.position}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Add subtle background elements */}

@@ -51,7 +51,7 @@ export default function Navbar() {
         {/* Reduced padding from py-4 to py-3 to make navbar thinner */}
         <nav className="flex justify-between items-center py-3">
           <Link 
-            href="#" 
+            href="/" 
             className="text-2xl font-bold flex items-center space-x-2"
             style={{ 
               background: '',
@@ -69,16 +69,16 @@ export default function Navbar() {
 
           <div className="hidden lg:flex space-x-8">
             <Link 
-              href="#home"
+              href="/"  // Changed to match OurTeamSection ID
               className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
               HOME
             </Link>
             <Link 
-              href="#about-us"  // Changed to match AboutUsSection ID
+              href="/our-team"  // Changed to match AboutUsSection ID
               className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
-              ABOUT US
+              OUR TEAM
             </Link>
             <Link 
               href="#industry"  // Changed to match IndustryCarousel section

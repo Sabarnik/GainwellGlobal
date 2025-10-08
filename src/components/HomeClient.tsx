@@ -16,7 +16,7 @@ import PartnersSection from '@/components/PartnerSection';
 import OurTeam from '@/components/OurTeam';
 import OurFacilitiesSection from './OurFacilities';
 import AwardsSection from './Awards';
-import LinkedInAdSection from './LinkedInAdSection';
+// import LinkedInAdSection from './LinkedInAdSection';
 export default function HomeClient() {
   return (
     <main className="bg-gray-50 text-gray-800">
@@ -26,7 +26,7 @@ export default function HomeClient() {
       <IndustryCarousel />
       <AboutUs />
       <OurTeam />
-      <LinkedInAdSection />
+      {/* <LinkedInAdSection /> */}
       <OurFacilitiesSection />
       <OurValues />
       <CSRSection />

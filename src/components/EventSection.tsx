@@ -21,13 +21,22 @@ export default function EventsSection() {
   // Events data with web images
   const eventsData: EventItem[] = [
     {
+      id: 8,
+      title: 'Visionaries of $5 Trillion Economy',
+      date: '',
+      description: 'Gainwell Group Achievement - Visionaries of $5 Trillion Economy',
+      image: `${basePath}/bannerLinkedIn.jpeg`,
+      location: 'Global',
+      readMoreLink: 'https://www.gainwellindia.com/assets/pdf/five_trilion_eco.pdf'
+    },
+    {
       id: 1,
       title: '100 Years of Caterpillar & 8 Decades of Gainwell Celebrations',
       date: '',
       description: 'Marking 100 Years of Caterpillar — With Pride, Progress, and Partnership. As we celebrated a century of Caterpillar, the evening became a tribute to enduring partnerships, daring innovation, and a shared vision for the future. From legacy-defining machinery to ideas shaping tomorrow, the event highlighted Caterpillar\'s century of influence — and the global network it has powered across industries. At Gainwell, this was more than a celebration. It was a moment of reflection — and a strong reminder of our responsibility to help shape the next era of infrastructure and industrial progress with the same vision and purpose that have driven the past hundred years. Watch the full video and step into a night that brought a century of achievements to life. Here\'s to a hundred years of building — and to all the future we\'ll create, together!',
       image: `${basePath}/e1.jpg`,
       location: 'New Delhi, India',
-      readMoreLink: '#'
+      readMoreLink: 'https://www.gainwellindia.com/news_event/100-years-of-caterpillar-8-decades-of-gainwell-celebrations/?id=25'
     },
     {
       id: 2,
@@ -36,15 +45,15 @@ export default function EventsSection() {
       description: 'We are proud to announce the opening of our state-of-the-art manufacturing facility in Pune.',
       image: `${basePath}/e2.jpg`,
       location: 'Pune, India',
-      readMoreLink: '#'
+      readMoreLink: 'https://www.gainwellindia.com/news_event/gainwell-takes-immense-pride-in-its-association-with-the-prestigious-3-42-km-long-three-lane-twin-tunnel-project-in-odisha/?id=18'
     },
     {
       id: 3,
-      title: 'Highlights from Mr. Jim Umpleby’s Visit',
+      title: 'Highlights from Mr. Jim Umpleby\'s Visit',
       date: '',
       description: 'Strategic partnership with GreenTech Solutions to develop eco-friendly mining equipment.',
       image: `${basePath}/e3.jpeg`,
-      readMoreLink: '#'
+      readMoreLink: 'https://www.gainwellindia.com/news_event/highlights-from-mr-jim-umpleby-rsquo-s-visit/?id=19'
     },
     {
       id: 4,
@@ -53,7 +62,7 @@ export default function EventsSection() {
       description: 'Celebrating our outstanding employees who demonstrated exceptional performance.',
       image: `${basePath}/e4.jpg`,
       location: 'Kolkata, India',
-      readMoreLink: '#'
+      readMoreLink: 'https://www.gainwellindia.com/news_event/cat-dg-cpcb-iv-flag-off-ceremony-at-unnati-greater-noida/?id=20'
     },
     {
       id: 5,
@@ -61,7 +70,7 @@ export default function EventsSection() {
       date: '',
       description: 'Get ready for our revolutionary new product line with cutting-edge technology.',
       image: `${basePath}/e5.jpg`,
-      readMoreLink: '#'
+      readMoreLink: 'https://www.gainwellindia.com/news_event/mr-sam-vedhakumar-m-the-new-sr-vice-president-of-caterpillar-visit-at-unnati-greater-noida/?id=17'
     },
     {
       id: 6,
@@ -70,16 +79,16 @@ export default function EventsSection() {
       description: 'Participate in discussions about the future of heavy equipment technology.',
       image: `${basePath}/e6.jpeg`,
       location: 'Bangalore, India',
-      readMoreLink: '#'
+      readMoreLink: 'https://www.gainwellindia.com/news_event/grand-opening-of-gainwell-new-office-in-dhanbad/?id=15'
     },
     {
       id: 7,
-      title: 'Event 7',
+      title: 'Inauguration of Unnati 2, our new facility at Greater Noida',
       date: '',
       description: 'Expansion into new international markets, bringing our quality equipment worldwide.',
       image: `${basePath}/e7.jpg`,
-      location: 'Global',
-      readMoreLink: '#'
+      location: 'Greater Noida',
+      readMoreLink: 'https://www.gainwellindia.com/news_event/inauguration-of-unnati-2-our-new-facility-at-greater-noida/?id=16'
     },
   ];
 
@@ -113,6 +122,13 @@ export default function EventsSection() {
     setTimeout(() => {
       sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
+  };
+
+  // Function to handle external link click
+  const handleReadMoreClick = (link: string) => {
+    if (link && link !== '#') {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const showLoadMore = visibleCount < eventsData.length;
@@ -170,7 +186,7 @@ export default function EventsSection() {
                   src={event.image}
                   alt={event.title}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="object-contain object-top transition-transform duration-700"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
 
@@ -203,9 +219,17 @@ export default function EventsSection() {
                     {event.description}
                   </p>
 
-                  {/* Read More Button */}
-                  <button className="w-full text-center py-2 rounded-lg text-sm font-semibold bg-[#3A55A5] text-white hover:opacity-90 transition-opacity">
-                    Read More
+                  {/* Read More Button - Updated to handle external links */}
+                  <button 
+                    onClick={() => handleReadMoreClick(event.readMoreLink || '#')}
+                    className={`w-full text-center py-2 rounded-lg text-sm font-semibold transition-opacity ${
+                      event.readMoreLink && event.readMoreLink !== '#' 
+                        ? 'bg-[#3A55A5] text-white hover:opacity-90 cursor-pointer' 
+                        : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                    }`}
+                    disabled={!event.readMoreLink || event.readMoreLink === '#'}
+                  >
+                    {event.readMoreLink && event.readMoreLink !== '#' ? 'Read More' : 'Coming Soon'}
                   </button>
                 </div>
               </div>
