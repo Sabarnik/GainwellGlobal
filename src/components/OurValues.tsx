@@ -1,282 +1,288 @@
 // components/OurValues.tsx
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
+type Pillar = {
+  key: string;
+  title: string;
+  description: string;
+  color: string;
+  textColor: string;
+  iconSrc: string;
+};
 
 export default function OurValues() {
   const [isVisible, setIsVisible] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [activePillar, setActivePillar] = useState<string | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLIFrameElement>(null);
-  const sliderIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Updated values data with 4P's of Sustainability
-  const values = [
+  // ======= UPDATE IMAGE PATHS AS NEEDED =========
+  const RING_SRC = `${basePath}/culture.jpg`;
+  const PILLAR_ICONS = {
+    excellence: `${basePath}/Excellence.png`,
+    entrepreneurship: `${basePath}/Entrepreneurship.png`,
+    collaboration: `${basePath}/Collaboration.png`,
+    customerCentricity: `${basePath}/Customer Centricity.png`,
+    caring: `${basePath}/Caring.png`,
+  };
+
+  // ======= Pillars data (5) =======
+  const pillars: Pillar[] = [
     {
-      title: "Purpose",
-      description: "An affirmation of our organisation's reason for being in existence and driving our mission forward.",
-      detailedDescription: "Our purpose defines why we exist beyond making profits. It's our north star that guides our decisions, inspires our team, and creates meaningful impact in the industries we serve.",
-      icon: "fas fa-bullseye",
-      color: "from-[#3A55A5] to-[#4A6BC5]",
-      features: ["Mission-driven approach", "Long-term vision", "Meaningful impact"]
+      key: 'customer-centricity',
+      title: 'Customer Centricity',
+      description: 'Creating superior customer relationship to drive business sustainability',
+      color: 'bg-[#0DA8D6]',
+      textColor: 'text-white',
+      iconSrc: PILLAR_ICONS.customerCentricity,
     },
     {
-      title: "People",
-      description: "The positive impact our employees, partners and communities have on our business success.",
-      detailedDescription: "Our people are our greatest asset. We invest in their growth, value their contributions, and foster an inclusive environment where everyone can thrive and reach their full potential.",
-      icon: "fas fa-users",
-      color: "from-[#F5872E] to-[#FFA057]",
-      features: ["Employee development", "Inclusive culture", "Community engagement"]
+      key: 'collaboration',
+      title: 'Collaboration',
+      description: 'Working in a team to achieve common goal',
+      color: 'bg-[#F58A2E]',
+      textColor: 'text-white',
+      iconSrc: PILLAR_ICONS.collaboration,
     },
     {
-      title: "Planet",
-      description: "Our commitment to minimizing environmental impact and promoting sustainable practices.",
-      detailedDescription: "We recognize our responsibility to protect the environment for future generations. Through sustainable operations, eco-friendly solutions, and responsible resource management, we contribute to a healthier planet.",
-      icon: "fas fa-globe-americas",
-      color: "from-[#40A748] to-[#50C758]",
-      features: ["Environmental stewardship", "Sustainable operations", "Eco-friendly solutions"]
+      key: 'caring',
+      title: 'Caring',
+      description: 'A positive workplace with respect, empathy and well-being for others',
+      color: 'bg-[#5BC65A]',
+      textColor: 'text-white',
+      iconSrc: PILLAR_ICONS.caring,
     },
     {
-      title: "Profit",
-      description: "Generating sustainable value for our stakeholders while maintaining ethical business practices.",
-      detailedDescription: "Profit enables us to reinvest in innovation, reward our stakeholders, and continue our mission. We pursue financial success responsibly, ensuring it aligns with our values and long-term sustainability.",
-      icon: "fas fa-chart-line",
-      color: "from-[#3ABEEE] to-[#5AD0FF]",
-      features: ["Sustainable growth", "Stakeholder value", "Ethical profitability"]
+      key: 'entrepreneurship',
+      title: 'Entrepreneurship',
+      description: 'Providing an empowering environment to facilitate independence and decision making',
+      color: 'bg-[#E84A45]',
+      textColor: 'text-white',
+      iconSrc: PILLAR_ICONS.entrepreneurship,
+    },
+    {
+      key: 'excellence',
+      title: 'Excellence',
+      description: 'Adding value to every activity to achieve a higher standards across the organisation',
+      color: 'bg-[#7B3FA2]',
+      textColor: 'text-white',
+      iconSrc: PILLAR_ICONS.excellence,
     },
   ];
 
   // Intersection Observer for scroll animations
   useEffect(() => {
-    const currentSection = sectionRef.current;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIsVisible(true);
-      }
-    }, { threshold: 0.2 });
-
-    if (currentSection) observer.observe(currentSection);
-
-    return () => {
-      if (currentSection) observer.unobserve(currentSection);
-    };
+    const current = sectionRef.current;
+    if (!current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(current);
+    return () => observer.disconnect();
   }, []);
-
-  // Auto-play slider
-  useEffect(() => {
-    sliderIntervalRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % values.length);
-    }, 6000);
-
-    return () => {
-      if (sliderIntervalRef.current) {
-        clearInterval(sliderIntervalRef.current);
-      }
-    };
-  }, [values.length]);
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    // Reset the auto-play timer
-    if (sliderIntervalRef.current) {
-      clearInterval(sliderIntervalRef.current);
-    }
-    sliderIntervalRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % values.length);
-    }, 6000);
-  };
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % values.length);
-    // Reset the auto-play timer
-    if (sliderIntervalRef.current) {
-      clearInterval(sliderIntervalRef.current);
-    }
-    sliderIntervalRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % values.length);
-    }, 6000);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + values.length) % values.length);
-    // Reset the auto-play timer
-    if (sliderIntervalRef.current) {
-      clearInterval(sliderIntervalRef.current);
-    }
-    sliderIntervalRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % values.length);
-    }, 6000);
-  };
 
   return (
     <section
       id="values"
       ref={sectionRef}
-      className="relative py-20 bg-gradient-to-b from-gray-200 to-white overflow-hidden"
+      className="relative py-12 md:py-20 bg-gradient-to-b from-white to-gray-50/30 overflow-hidden"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.1)_100%)]"></div>
       </div>
 
-      {/* Gradient Lines Animation */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className={`absolute top-1/4 left-0 w-1/3 h-1 bg-gradient-to-r from-transparent via-[#F5872E]/30 to-transparent transform -skew-y-12 transition-all duration-1000 ease-out ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}></div>
-        <div className={`absolute top-1/2 right-0 w-1/3 h-1 bg-gradient-to-l from-transparent via-[#3A55A5]/30 to-transparent transform skew-y-12 transition-all duration-1000 delay-300 ease-out ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}></div>
-        <div className={`absolute bottom-1/4 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-[#40A748]/20 to-transparent transform transition-all duration-1000 delay-500 ease-out ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}></div>
-      </div>
-
-      <div className="container max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div
-          className={`text-center mb-16 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+          className={`text-center mb-12 md:mb-16 lg:mb-20 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
         >
-          <h2 className="text-4xl md:text-5xl font-din font-bold text-[#08193C] relative inline-block">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#08193C] relative inline-block">
             <span className="relative">
               Our Core Values
-              <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-300 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}></span>
+              <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-300 ease-out origin-left scale-x-0"></span>
+              <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}></span>
             </span>
           </h2>
-          <p className="mt-6 text-lg text-[#3A55A5] font-roboto max-w-2xl mx-auto transition-all duration-1000 delay-700 ease-out">
-            The 4P&apos;s that guide our sustainable business practices and long-term vision
+          <p className="mt-6 md:mt-8 text-lg sm:text-xl text-[#3A55A5] max-w-3xl mx-auto leading-relaxed transition-all duration-1000 delay-700 ease-out px-4">
+            {/* These pillars reflect how we operate every day — guiding behaviour, decisions, and outcomes. */}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
-          {/* Video Section - Now on the LEFT */}
-          <div
-            className={`relative rounded-2xl overflow-hidden shadow-xl transition-all duration-1000 ease-out ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'} h-full flex flex-col`}
-          >
-            {/* YouTube Video Container */}
-            <div className="relative h-[250px] bg-gray-900 flex-grow">
-              {!videoLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#08193C] to-[#3A55A5]">
-                  <div className="text-white text-center">
-                    <i className="fas fa-play-circle text-5xl mb-3 opacity-80"></i>
-                    <p className="font-roboto">Loading video...</p>
-                  </div>
-                </div>
-              )}
-
-              <iframe
-                ref={videoRef}
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/DyNfwjZJEm4?start=1&rel=0&modestbranding=1&showinfo=0"
-                title="Our Values"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                onLoad={() => setVideoLoaded(true)}
-              ></iframe>
-
-              {/* Video Title */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                <h3 className="text-white font-din font-bold text-xl">Our Commitment to Sustainability</h3>
-                <p className="text-gray-300 font-roboto text-sm mt-1">Learn about our 4P framework</p>
-              </div>
+        <div
+          className={`flex flex-col lg:flex-row items-center lg:items-start gap-8 md:gap-12 lg:gap-16 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
+          {/* LEFT: Reduced size ring graphic */}
+          <div className="w-full lg:w-2/5 flex flex-col items-center gap-6 md:gap-8">
+            <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-72 lg:h-72 rounded-full shadow-xl md:shadow-2xl overflow-hidden border-6 md:border-8 border-white/80">
+              <Image
+                src={RING_SRC}
+                alt="Culture ring"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 192px, (max-width: 768px) 224px, (max-width: 1024px) 240px, 288px"
+                priority
+              />
             </div>
-
+            
+            {/* Simple p tag below image */}
+            <p className={`text-base md:text-lg lg:text-xl text-[#3A55A5] text-center max-w-md leading-relaxed transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] px-4 ${
+              isVisible ? 'translate-x-0 opacity-100 delay-800' : '-translate-x-10 opacity-0'
+            }`}>
+              We shall always be preferred partner to all our customers for providing innovative, diverse and sustainable solutions aimed at creating value for our stakeholders and the society at large.
+            </p>
           </div>
 
-          {/* Enhanced Values Section with Slider - Now on the RIGHT */}
-          <div
-            className={`transition-all duration-1000 delay-300 ease-out ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-100'} h-full`}
-          >
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 h-full flex flex-col">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-3xl font-din font-bold text-[#08193C]">
-                  The 4P&apos;s of Sustainability
-                </h3>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={prevSlide}
-                    className="w-10 h-10 rounded-full bg-gray-100 text-[#3A55A5] flex items-center justify-center hover:bg-[#3A55A5] hover:text-white transition-colors"
-                  >
-                    <i className="fas fa-chevron-left text-sm"></i>
-                  </button>
-                  <button
-                    onClick={nextSlide}
-                    className="w-10 h-10 rounded-full bg-gray-100 text-[#3A55A5] flex items-center justify-center hover:bg-[#3A55A5] hover:text-white transition-colors"
-                  >
-                    <i className="fas fa-chevron-right text-sm"></i>
-                  </button>
+          {/* RIGHT: 5 pillars - Horizontal on desktop, vertical on mobile */}
+          <div className="w-full lg:w-3/5">
+            {/* Mobile: Vertical stack with tap to expand */}
+            <div className="lg:hidden space-y-4">
+              {pillars.map((p, idx) => (
+                <div
+                  key={p.key}
+                  className={`bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/60 overflow-hidden transition-all duration-500 ease-out ${
+                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+                  }`}
+                  style={{ transitionDelay: `${idx * 100}ms` }}
+                  onClick={() => setActivePillar(activePillar === p.key ? null : p.key)}
+                >
+                  <div className="flex items-center p-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${p.color}`}>
+                      <div className="relative w-8 h-8 flex items-center justify-center">
+                        <Image
+                          src={p.iconSrc}
+                          alt={`${p.title} icon`}
+                          width={32}
+                          height={32}
+                          className="object-contain"
+                        />
+                      </div>
+                    </div>
+                    <h4 className="text-lg font-bold text-[#08193C] flex-1">
+                      {p.title}
+                    </h4>
+                    <div className={`transform transition-transform duration-300 ${
+                      activePillar === p.key ? 'rotate-180' : ''
+                    }`}>
+                      <svg className="w-5 h-5 text-[#3A55A5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                  
+                  {/* Mobile expanded content */}
+                  <div className={`transition-all duration-500 ease-out overflow-hidden ${
+                    activePillar === p.key ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+                  }`}>
+                    <div className="p-4 border-t border-gray-200/60">
+                      <p className="text-sm text-[#3A55A5] leading-relaxed">
+                        {p.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
+            </div>
 
-              <div className="relative overflow-hidden flex-grow min-h-[250px]">
-                {values.map((value, index) => (
-                  <div
-                    key={index}
-                    className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
-                  >
-                    <div className="group h-full">
-                      <div className="flex items-start gap-5 h-full">
-                        <div className={`flex-shrink-0 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${value.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                          <i className={`${value.icon} text-xl`}></i>
-                        </div>
+            {/* Desktop: Horizontal expanding pillars */}
+            <div className="hidden lg:flex items-center justify-center gap-2 lg:gap-3">
+              {pillars.map((p, idx) => (
+                <div
+                  key={p.key}
+                  className={`group relative transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+                  } ${
+                    activePillar === p.key 
+                      ? 'w-80 lg:w-96 flex-[2]' // Expanded width
+                      : 'w-20 lg:w-24 flex-1' // Collapsed width - same size for all
+                  } ${
+                    activePillar && activePillar !== p.key ? 'opacity-70' : 'opacity-100'
+                  }`}
+                  style={{ 
+                    transitionDelay: `${idx * 50}ms`,
+                  }}
+                  onMouseEnter={() => setActivePillar(p.key)}
+                  onMouseLeave={() => setActivePillar(null)}
+                >
+                  {/* Pillar Container - Same color throughout */}
+                  <div className={`${p.color} rounded-2xl shadow-lg border-4 border-white/90 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:shadow-2xl h-80 lg:h-96 flex flex-col relative`}>
+                    
+                    {/* Icon Section - Larger and at the very top */}
+                    <div className={`flex-shrink-0 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                      activePillar === p.key ? 'h-20 lg:h-24' : 'h-20 lg:h-24'
+                    }`}>
+                      <div className="relative w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center">
+                        <Image
+                          src={p.iconSrc}
+                          alt={`${p.title} icon`}
+                          width={80}
+                          height={80}
+                          className="object-contain drop-shadow-lg"
+                        />
+                      </div>
+                    </div>
 
-                        <div className="flex-1">
-                          <h4 className="text-xl font-din font-bold text-[#08193C] mb-2">
-                            {value.title}
-                          </h4>
-                          <p className="text-[#3A55A5] font-roboto mb-3">
-                            {value.description}
-                          </p>
-                          <p className="text-gray-600 font-roboto text-sm mb-3">
-                            {value.detailedDescription}
-                          </p>
+                    {/* Vertical Title - Right-aligned when idle with larger font */}
+                    <div className={`flex-1 flex items-center justify-end pr-2 lg:pr-3 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                      activePillar === p.key ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
+                    }`}>
+                      <h4 className={`text-base lg:text-lg font-bold drop-shadow-lg ${p.textColor} writing-mode-vertical-lr whitespace-nowrap`}>
+                        {p.title}
+                      </h4>
+                    </div>
 
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {value.features.map((feature, featureIndex) => (
-                              <span
-                                key={featureIndex}
-                                className="inline-flex items-center text-xs font-roboto font-medium bg-gray-100 text-[#3A55A5] px-3 py-1 rounded-full"
-                              >
-                                <i className="fas fa-check-circle text-[#40A748] mr-1.5 text-xs"></i>
-                                {feature}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
+                    {/* Details Section - Expands from bottom on hover */}
+                    <div className={`absolute inset-0 transition-all duration-600 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${
+                      activePillar === p.key 
+                        ? 'opacity-100 translate-y-0' 
+                        : 'opacity-0 translate-y-4'
+                    }`}>
+                      <div className="p-6 lg:p-8 flex flex-col justify-center h-full min-w-0 pt-20 lg:pt-24">
+                        {/* Reduced font size for all titles on hover */}
+                        <h4 className={`font-bold mb-2 lg:mb-3 drop-shadow-lg transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${p.textColor} ${
+                          activePillar === p.key ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                        } text-center ${
+                          p.key === 'entrepreneurship' 
+                            ? 'text-sm lg:text-base whitespace-normal break-words' 
+                            : 'text-sm lg:text-base whitespace-nowrap'
+                        }`}>
+                          {p.title}
+                        </h4>
+                        {/* Even smaller font size for descriptions on hover */}
+                        <p className={`text-xs lg:text-sm leading-relaxed font-medium drop-shadow-md transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${p.textColor} opacity-95 ${
+                          activePillar === p.key ? 'translate-y-0 opacity-100 delay-75' : 'translate-y-4 opacity-0 delay-0'
+                        } text-center`}>
+                          {p.description}
+                        </p>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-
-              {/* Slider Dots */}
-              <div className="flex justify-center mt-6 space-x-2">
-                {values.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-[#3A55A5] scale-125' : 'bg-gray-300'}`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-
-        <div className="mt-12 text-center max-w-3xl mx-auto">
-          <h4 className="text-2xl font-din font-bold text-[#08193C] mb-4">
-            Living Our Values
-          </h4>
-          <p className="text-[#3A55A5] font-roboto text-lg">
-            These principles are not just concepts— they are the daily practices that shape our culture, guide our decisions, and define our relationships with clients, partners, and each other.
-          </p>
-        </div>
       </div>
 
-      {/* Decorative Elements */}
-      <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-[#F5872E]/10 blur-3xl"></div>
-      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-[#3A55A5]/10 blur-3xl"></div>
+      {/* Background elements */}
+      <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-[#F5872E]/10 blur-3xl"></div>
+      <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-[#3A55A5]/10 blur-3xl"></div>
+      <div className="absolute top-1/2 -left-10 w-40 h-40 rounded-full bg-[#5BC65A]/5 blur-3xl"></div>
+      <div className="absolute bottom-10 -right-10 w-40 h-40 rounded-full bg-[#E84A45]/5 blur-3xl"></div>
 
-      {/* Add Font Awesome for icons */}
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+      {/* Add custom CSS for vertical text */}
+      <style jsx>{`
+        .writing-mode-vertical-lr {
+          writing-mode: vertical-lr;
+        }
+      `}</style>
     </section>
   );
 }

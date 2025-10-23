@@ -69,25 +69,25 @@ export default function Navbar() {
 
           <div className="hidden lg:flex space-x-8">
             <Link 
-              href="/"  // Changed to match OurTeamSection ID
+              href="/"  // Home page
               className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
               HOME
             </Link>
             <Link 
-              href="/our-team"  // Changed to match AboutUsSection ID
+              href="/our-team"  // Our Team page
               className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
               OUR TEAM
             </Link>
             <Link 
-              href="#industry"  // Changed to match IndustryCarousel section
+              href="/#industry"  // Home page with industry section hash
               className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
               BUSINESS
             </Link>
             <Link 
-              href="#csr-grid"  // Changed to match CSRSection ID
+              href="/#csr-grid"  // Home page with CSR section hash
               className="nav-link text-[15px] font-semibold tracking-wider text-gray-800 hover:text-primary"
             >
               COMMUNITY WORK
@@ -122,28 +122,28 @@ export default function Navbar() {
         >
           <div className="flex flex-col items-center justify-start space-y-8 pt-10">
             <Link 
-              href="#home"
+              href="/"
               className="text-lg font-semibold tracking-wider text-gray-800 hover:text-primary"
               onClick={handleNavClick}
             >
               HOME
             </Link>
             <Link 
-              href="#about-us"
+              href="/our-team"
               className="text-lg font-semibold tracking-wider text-gray-800 hover:text-primary"
               onClick={handleNavClick}
             >
-              ABOUT US
+              OUR TEAM
             </Link>
             <Link 
-              href="#industry"
+              href="/#industry"
               className="text-lg font-semibold tracking-wider text-gray-800 hover:text-primary"
               onClick={handleNavClick}
             >
               BUSINESS
             </Link>
             <Link 
-              href="#csr-grid"
+              href="/#csr-grid"
               className="text-lg font-semibold tracking-wider text-gray-800 hover:text-primary"
               onClick={handleNavClick}
             >
@@ -154,4 +154,4 @@ export default function Navbar() {
       </div>
     </header>
   );
-} 
+}

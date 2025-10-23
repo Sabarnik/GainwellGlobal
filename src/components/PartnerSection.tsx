@@ -18,10 +18,10 @@ export default function PartnersSection() {
   const partners: Partner[] = [
     { id: 1, name: 'Caterpillar', logo: `${basePath}/partner1.jpeg`, website: 'https://www.caterpillar.com' },
     { id: 2, name: 'FG Wilson', logo: `${basePath}/partner2.jpg`, website: 'https://www.fgwilson.com' },
-    { id: 3, name: 'SEM', logo: `${basePath}/partner3.png`, website: 'https://www.semmachinery.com' },
-    { id: 4, name: 'STECH', logo: `${basePath}/partner4.png`, website: 'https://www.stechindia.com' },
-    { id: 5, name: 'Tulip', logo: `${basePath}/partner5.jpg`, website: 'https://www.tulipcompression.com' },
-    { id: 6, name: 'Lintec & Linnhoff', logo: `${basePath}/partner6.png`, website: 'https://www.lintec-linnhoff.com' },
+    { id: 3, name: 'SEM', logo: `${basePath}/partner4.png`, website: 'https://www.semmachinery.com' },
+    { id: 4, name: 'STECH', logo: `${basePath}/partner6.png`, website: 'https://www.sitechindia-ne.com' },
+    { id: 5, name: 'Ethnyre', logo: `${basePath}/partner5.jpg`, website: 'https://etnyre.com' },
+    { id: 6, name: 'Lintec & Linnhoff', logo: `${basePath}/partner3.png`, website: 'https://www.lintec-linnhoff.com' },
   ];
   // Intersection Observer for scroll animations
   useEffect(() => {

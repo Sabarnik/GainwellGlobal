@@ -3,15 +3,14 @@ const nextConfig = {
   reactStrictMode: true,
 
   basePath: '/gainwellglobal',
-  assetPrefix: '',
+  assetPrefix: '/gainwellglobal',
 
   env: {
     NEXT_PUBLIC_BASE_PATH: '/gainwellglobal',
   },
 
   images: {
-    domains: ["images.unsplash.com"],
-  },
+      },
 
   async redirects() {
     return [

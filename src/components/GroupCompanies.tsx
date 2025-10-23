@@ -33,24 +33,6 @@ export default function GroupCompaniesSection() {
     },
     {
       id: 2,
-      name: 'Acceleron Solutions',
-      logo: `${basePath}/acceleron1.png`,
-      description:
-        "Gainwell Group's tech arm that offers software support, IT infrastructure, cloud services, and cybersecurity.",
-      website: 'https://acceleronsolutions.io/',
-      color: 'from-[#F5872E] to-[#FFA057]',
-    },
-    {
-      id: 3,
-      name: 'TIL Limited',
-      logo: `${basePath}/tractors-india.png`,
-      description:
-        "Supports India's infrastructure with advanced material handling and lifting solutions.",
-      website: 'https://tilindia.in/',
-      color: 'from-[#40A748] to-[#50C758]',
-    },
-    {
-      id: 4,
       name: 'Gainwell Engineering',
       logo: `${basePath}/team3.png`,
       description:
@@ -59,22 +41,49 @@ export default function GroupCompaniesSection() {
       color: 'from-[#3ABEEE] to-[#4AD0FF]',
     },
     {
-      id: 5,
-      name: 'Tractors Nepal',
-      logo: `${basePath}/team5.png`,
+      id: 3,
+      name: 'TIL Limited',
+      logo: `${basePath}/tilIndia.png`,
       description:
-        'A subsidiary of Gainwell Commosales Pvt. Ltd., with over 20 years of experience in servicing Cat equipment in Nepal.',
-      website: 'http://www.tractorsnepal.com/',
-      color: 'from-[#405A2A] to-[#318741]',
+        "Supports India's infrastructure with advanced material handling and lifting solutions.",
+      website: 'https://tilindia.in/',
+      color: 'from-[#40A748] to-[#50C758]',
     },
     {
-      id: 6,
+      id: 4,
       name: 'Tulip Compression',
       logo: `${basePath}/team6.png`,
       description:
         'Specializes in industrial compression solutions and services for various sectors including energy and manufacturing.',
       website: 'https://www.tulipcompression.com/about-us.html',
       color: 'from-[#405A2A] to-[#318741]',
+    },
+    {
+      id: 5,
+      name: 'Resurgent',
+      logo: `${basePath}/resurgent.png`,
+      description:
+        'Resurgent Mining is at the forefront of providing innovative services to the mining and infrastructure sectors',
+      website: 'https://resurgentmining.com/',
+      color: 'from-[#8B4513] to-[#A0522D]',
+    },
+    {
+      id: 6,
+      name: 'Acceleron Solutions',
+      logo: `${basePath}/acceleron1.png`,
+      description:
+        "Gainwell Group's tech arm that offers software support, IT infrastructure, cloud services, and cybersecurity.",
+      website: 'https://acceleronsolutions.io/',
+      color: 'from-[#F5872E] to-[#FFA057]',
+    },
+    {
+      id: 7,
+      name: 'Gainwell Trucking',
+      logo: `${basePath}/final-logo-gainwell.png`,
+      description:
+        'Part of the Gainwell Group, GTPL (Gainwell Trucking Private Limited), an authorized channel partner for BharatBenz mining trucks, bringing world-class trucking solutions to the mining and infrastructure sectors.',
+      website: 'https://www.gainwelltrucking.com',
+      color: 'from-[#8B4513] to-[#A0522D]',
     },
   ];
 
@@ -86,7 +95,7 @@ export default function GroupCompaniesSection() {
       { threshold: 0.1 }
     );
 
-    const currentSection = sectionRef.current; // ✅ copy to variable
+    const currentSection = sectionRef.current;
 
     if (currentSection) observer.observe(currentSection);
     return () => {
@@ -125,13 +134,17 @@ export default function GroupCompaniesSection() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div
-          className={`text-center mb-12 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-            }`}
+          className={`text-center mb-12 transition-all duration-1000 ease-out ${
+            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+          }`}
         >
           <h2 className="text-4xl md:text-5xl font-bold text-[#08193C] mb-4 relative inline-block">
             <span className="relative z-10">Our Group Companies</span>
-           <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-300 ease-out origin-left scale-x-0"></span>
-                <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}></span>
+            <span
+              className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out ${
+                isVisible ? 'scale-x-100' : 'scale-x-0'
+              }`}
+            ></span>
           </h2>
           <p className="mt-4 text-lg text-[#3A55A5] max-w-2xl mx-auto">
             A diverse portfolio of companies working together to deliver comprehensive solutions
@@ -139,25 +152,26 @@ export default function GroupCompaniesSection() {
         </div>
 
         {/* Companies Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 relative z-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative z-20">
           {companies.map((company, index) => (
             <div
               key={company.id}
-              className={`relative group transition-all duration-700 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                }`}
+              className={`relative group transition-all duration-700 ease-out ${
+                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              } ${company.id === 7 ? 'md:col-start-2' : ''}`}
               style={{ transitionDelay: `${index * 100}ms` }}
               onMouseEnter={() => setHoveredCompany(company.id)}
               onMouseLeave={() => setHoveredCompany(null)}
             >
               <Link href={company.website} target="_blank" rel="noopener noreferrer">
                 <div className="relative flex flex-col items-center transition-all duration-300 group-hover:scale-105">
-                  {/* Logo Container */}
+                  {/* Logo Container - Square */}
                   <div className="relative w-36 h-36 md:w-44 md:h-44 transition-all duration-300 group-hover:scale-110">
                     <div
-                      className={`absolute inset-0 rounded-full bg-gradient-to-br ${company.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300 -z-10`}
+                      className={`absolute inset-0 rounded-lg bg-gradient-to-br ${company.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300 -z-10`}
                     ></div>
-                    <div className="absolute inset-0 rounded-full bg-gray-100/50 group-hover:bg-gray-100/80 transition-colors duration-300 -z-10"></div>
-                    <div className="relative w-full h-full rounded-full overflow-hidden p-4">
+                    <div className="absolute inset-0 rounded-lg bg-gray-100/50 group-hover:bg-gray-100/80 transition-colors duration-300 -z-10"></div>
+                    <div className="relative w-full h-full rounded-lg overflow-hidden p-4">
                       <Image
                         src={company.logo}
                         alt={company.name}
@@ -168,14 +182,17 @@ export default function GroupCompaniesSection() {
                     </div>
                   </div>
 
-                  {/* Description Dropdown */}
-                  <div className={`
-                    w-full mt-4 overflow-hidden transition-all duration-500 ease-in-out
-                    ${hoveredCompany === company.id 
-                      ? 'max-h-32 opacity-100 translate-y-0' 
-                      : 'max-h-0 opacity-0 -translate-y-2'
+                  {/* Description Dropdown - No Company Name Heading */}
+                  <div
+                    className={`
+                    w-full mt-2 overflow-hidden transition-all duration-500 ease-in-out
+                    ${
+                      hoveredCompany === company.id
+                        ? 'max-h-32 opacity-100 translate-y-0'
+                        : 'max-h-0 opacity-0 -translate-y-2'
                     }
-                  `}>
+                  `}
+                  >
                     <div className="bg-white/80 backdrop-blur-sm rounded-lg p-3 shadow-sm border border-gray-200/50">
                       <p className="text-sm text-gray-700 text-center leading-relaxed">
                         {company.description}

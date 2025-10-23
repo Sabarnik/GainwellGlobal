@@ -50,8 +50,16 @@ export default function AboutUs() {
     return [
       {
         name: "1940s",
-        years: ["1944"],
+        years: ["1939-1940","1944"],
         events: [
+          {
+            year: "1939-1940",
+            content: "Powering India's Progress: Dozers, graders, and loaders — paving the way by introducing heavy machinery to a young and ambitious independent India.",
+            icon: "fas fa-flag",
+            color: "from-[#F5872E] to-[#FFA057]",
+            bgColor: "bg-orange-100",
+            image: `${basePath}/Story-Wall-2.jpg`,
+          },
           {
             year: "1944",
             content: "From 6 Church Lane, Calcutta — a bold beginning to transforming India's industrial future.",
@@ -59,21 +67,13 @@ export default function AboutUs() {
             color: "from-[#F5872E] to-[#FFA057]",
             bgColor: "bg-orange-100",
             image: `${basePath}/Story-Wall-1.jpg`,
-          }
+          },
         ]
       },
       {
         name: "1950s",
-        years: ["1944-1953", "1956"],
+        years: ["1956"],
         events: [
-          {
-            year: "1944-1953",
-            content: "Powering India's Progress: Dozers, graders, and loaders — paving the way by introducing heavy machinery to a young and ambitious independent India.",
-            icon: "fas fa-truck",
-            color: "from-[#3A55A5] to-[#4A6BC5]",
-            bgColor: "bg-blue-100",
-            image: `${basePath}/Story-Wall-2.jpg`,
-          },
           {
             year: "1956",
             content: "Serving the Nation's Need: From refugee resettlement to rebuilding infrastructure, our machines helped shape a resilient post-independence India.",

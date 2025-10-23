@@ -21,6 +21,15 @@ export default function EventsSection() {
   // Events data with web images
   const eventsData: EventItem[] = [
     {
+      id: 9,
+      title: 'How Sunil Chaturvedi and a small talented team forged Gainwell Group into a Global Powerhouse',
+      date: '',
+      description: 'From Humble Beginnings To Becoming A Global Powerhouse!',
+      image: `${basePath}/gind.jpg`,
+      location: 'Global',
+      readMoreLink: 'https://www.gainwellindia.com/news_event/how-sunil-chaturvedi-and-a-small-talented-team-forged-gainwell-group-into-a-global-powerhouse/?id=24'
+    },
+    {
       id: 8,
       title: 'Visionaries of $5 Trillion Economy',
       date: '',
@@ -219,12 +228,12 @@ export default function EventsSection() {
                     {event.description}
                   </p>
 
-                  {/* Read More Button - Updated to handle external links */}
+                  {/* Read More Button - Updated to match Industry section styling */}
                   <button 
                     onClick={() => handleReadMoreClick(event.readMoreLink || '#')}
-                    className={`w-full text-center py-2 rounded-lg text-sm font-semibold transition-opacity ${
+                    className={`w-full text-center py-3 rounded-full text-sm font-bold transition-colors duration-300 ${
                       event.readMoreLink && event.readMoreLink !== '#' 
-                        ? 'bg-[#3A55A5] text-white hover:opacity-90 cursor-pointer' 
+                        ? 'bg-white text-[#08193C] hover:bg-[#F5872E] hover:text-white cursor-pointer' 
                         : 'bg-gray-400 text-gray-200 cursor-not-allowed'
                     }`}
                     disabled={!event.readMoreLink || event.readMoreLink === '#'}
@@ -237,29 +246,23 @@ export default function EventsSection() {
           })}
         </div>
 
-        {/* Load More and Retract Buttons */}
+        {/* Load More and Retract Buttons - Updated to match Industry section */}
         <div className={`text-center mt-12 transition-all duration-700 delay-300 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           {showLoadMore && (
             <button
               onClick={handleLoadMore}
-              className="inline-flex items-center bg-gradient-to-r from-[#3A55A5] to-[#2C417E] text-white font-semibold py-3 px-8 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 mr-4"
+              className="bg-white text-[#08193C] font-bold py-3 px-6 rounded-full hover:bg-[#F5872E] hover:text-white transition-colors duration-300 mr-4"
             >
               Load More Events
-              <svg className="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
-              </svg>
             </button>
           )}
 
           {showRetract && (
             <button
               onClick={handleRetract}
-              className="inline-flex items-center bg-gradient-to-r from-gray-600 to-gray-700 text-white font-semibold py-3 px-8 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              className="bg-white text-[#08193C] font-bold py-3 px-6 rounded-full hover:bg-[#F5872E] hover:text-white transition-colors duration-300"
             >
               Show Less
-              <svg className="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"></path>
-              </svg>
             </button>
           )}
         </div>

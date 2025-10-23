@@ -60,7 +60,7 @@ const IndustryModal: React.FC<IndustryModalProps> = ({ isOpen, onClose, industry
                         learnMoreLink: 'https://tilindia.in/'
                     },
                     {
-                        src: `${basePath}/indocrestdefence.png`,
+                        src: `${basePath}/Indocrestdefence.png`,
                         description: 'At Indocrest Defence Solutions Pvt. Ltd. (IDSPL) innovation meets precision in the realm of military technology. We stand as a beacon of excellence in the field of defence solutions with an unwavering commitment to serving the Indian Defence sector.',
                         learnMoreLink: 'https://www.idsplindia.com/'
                     },

@@ -11,6 +11,7 @@ export default function CSRGridSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -64,14 +65,30 @@ export default function CSRGridSection() {
     },
   ];
 
-  // Create sets of up to 3 items, but fill incomplete sets with existing items
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
+  // Create sets of up to 3 items for desktop, 1 for mobile
   const createGroupedData = () => {
+    const itemsPerSlide = isMobile ? 1 : 3;
     const grouped = [];
-    for (let i = 0; i < csrData.length; i += 3) {
-      const set = csrData.slice(i, i + 3);
-      // If this is the last set and it has less than 3 items, fill with items from the beginning
-      if (set.length < 3) {
-        const needed = 3 - set.length;
+    
+    for (let i = 0; i < csrData.length; i += itemsPerSlide) {
+      const set = csrData.slice(i, i + itemsPerSlide);
+      // If this is the last set and it has less than required items, fill with items from the beginning
+      if (set.length < itemsPerSlide) {
+        const needed = itemsPerSlide - set.length;
         set.push(...csrData.slice(0, needed));
       }
       grouped.push(set);
@@ -90,6 +107,11 @@ export default function CSRGridSection() {
 
   const totalSlides = carouselData.length;
 
+  // Recreate grouped data when mobile state changes
+  useEffect(() => {
+    // Reset to first real slide when layout changes
+    setActiveIndex(1);
+  }, [isMobile]);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -175,7 +197,7 @@ export default function CSRGridSection() {
     <section
       id="csr-grid"
       ref={sectionRef}
-      className="relative py-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden"
+      className="relative py-8 md:py-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -189,26 +211,26 @@ export default function CSRGridSection() {
         <div className={`absolute bottom-1/4 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-[#40A748]/20 to-transparent transform transition-all duration-1000 delay-500 ease-out ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}></div>
       </div>
 
-      <div className="container max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div
-          className={`text-center mb-16 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+          className={`text-center mb-8 md:mb-16 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-[#08193C] relative inline-block">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#08193C] relative inline-block">
             <span className="relative">
               Corporate Social Responsibility
               <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-300 ease-out origin-left scale-x-0"></span>
               <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}></span>
             </span>
           </h2>
-          <p className="mt-6 text-lg text-[#3A55A5] max-w-2xl mx-auto transition-all duration-1000 delay-700 ease-out">
+          <p className="mt-4 md:mt-6 text-base sm:text-lg text-[#3A55A5] max-w-2xl mx-auto transition-all duration-1000 delay-700 ease-out">
             Creating sustainable value for communities and the environment through responsible business practices.
           </p>
         </div>
 
         {/* 3-Grid Infinite Carousel Section */}
         <div 
-          className="relative overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-100"
+          className="relative overflow-hidden rounded-xl md:rounded-2xl bg-white shadow-lg md:shadow-xl border border-gray-100"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
@@ -225,38 +247,38 @@ export default function CSRGridSection() {
             {carouselData.map((set, setIndex) => (
               <div
                 key={setIndex}
-                className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-8 p-8"
+                className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 p-4 sm:p-6 md:p-8"
               >
                 {set.map((item, itemIndex) => (
                   <div 
                     key={`${setIndex}-${item.id}`} 
-                    className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 transition-all duration-300 hover:shadow-xl flex flex-col h-full"
-                    style={{ borderTop: `5px solid ${item.color}` }}
+                    className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg overflow-hidden border border-gray-200 transition-all duration-300 hover:shadow-lg md:hover:shadow-xl flex flex-col h-full"
+                    style={{ borderTop: `4px solid ${item.color}` }}
                   >
                     {/* Image container with fixed aspect ratio */}
-                    <div className="relative h-72 w-full flex-shrink-0">
+                    <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 w-full flex-shrink-0">
                       <Image
                         src={item.image}
                         alt={item.title}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                         priority={itemIndex === 0 && setIndex === 1}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-                      <div className="absolute top-5 left-5 w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-lg">
-                        <i className={`${item.icon} text-xl`} style={{ color: item.color }}></i>
+                      <div className="absolute top-3 sm:top-4 md:top-5 left-3 sm:left-4 md:left-5 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center bg-white shadow-md md:shadow-lg">
+                        <i className={`${item.icon} text-sm sm:text-base md:text-lg lg:text-xl`} style={{ color: item.color }}></i>
                       </div>
                     </div>
                     
                     {/* Content container with flex-grow for consistent height */}
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-xl font-bold text-[#08193C] mb-3 leading-tight">{item.title}</h3>
-                      <p className="text-[#3A55A5] text-base mb-5 flex-grow line-clamp-3">
+                    <div className="p-4 sm:p-5 md:p-6 flex flex-col flex-grow">
+                      <h3 className="text-lg sm:text-xl font-bold text-[#08193C] mb-2 sm:mb-3 leading-tight">{item.title}</h3>
+                      <p className="text-[#3A55A5] text-sm sm:text-base mb-3 sm:mb-4 md:mb-5 flex-grow line-clamp-3">
                         {item.description}
                       </p>
                       <button 
-                        className="text-base font-semibold py-3 px-5 rounded-full transition-all duration-300 mt-auto"
+                        className="text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-5 rounded-full transition-all duration-300 mt-auto"
                         style={{ 
                           backgroundColor: `${item.color}15`, 
                           color: item.color 
@@ -282,26 +304,45 @@ export default function CSRGridSection() {
           {/* Navigation buttons */}
           <button
             onClick={handlePrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
+            className="absolute left-2 sm:left-3 md:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white shadow-lg md:shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
             aria-label="Previous CSR initiatives"
             type="button"
           >
-            <i className="fas fa-chevron-left text-lg group-hover:scale-110 transition-transform duration-200"></i>
+            <i className="fas fa-chevron-left text-sm sm:text-base md:text-lg group-hover:scale-110 transition-transform duration-200"></i>
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
+            className="absolute right-2 sm:right-3 md:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white shadow-lg md:shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
             aria-label="Next CSR initiatives"
             type="button"
           >
-            <i className="fas fa-chevron-right text-lg group-hover:scale-110 transition-transform duration-200"></i>
+            <i className="fas fa-chevron-right text-sm sm:text-base md:text-lg group-hover:scale-110 transition-transform duration-200"></i>
           </button>
+
+          {/* Mobile indicators */}
+          {isMobile && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+              {groupedData.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setIsTransitioning(true);
+                    setActiveIndex(index + 1); // +1 because of the cloned first item
+                  }}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    activeIndex === index + 1 ? 'bg-[#3A55A5] scale-125' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Add subtle background elements */}
-      <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-[#F5872E]/10 blur-3xl"></div>
-      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-[#3A55A5]/10 blur-3xl"></div>
+      <div className="absolute -bottom-10 sm:-bottom-20 -left-10 sm:-left-20 w-20 h-20 sm:w-40 sm:h-40 rounded-full bg-[#F5872E]/10 blur-2xl sm:blur-3xl"></div>
+      <div className="absolute -top-10 sm:-top-20 -right-10 sm:-right-20 w-20 h-20 sm:w-40 sm:h-40 rounded-full bg-[#3A55A5]/10 blur-2xl sm:blur-3xl"></div>
 
       {/* Add Font Awesome for icons */}
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />

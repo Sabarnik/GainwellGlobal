@@ -20,6 +20,7 @@ export default function AwardsSection() {
   const [activeSet, setActiveSet] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const awards: Award[] = [
@@ -96,23 +97,38 @@ export default function AwardsSection() {
     },
   ];
 
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
   // Create continuous loop by duplicating the awards with unique keys
   const createContinuousData = () => {
+    const itemsPerSlide = isMobile ? 1 : 3;
     const setsNeeded = 3; // Minimum sets needed for smooth continuous loop
     
-    // If we have exactly 3 awards, just return one set
-    if (awards.length === 3) {
+    // If we have exactly the number of items per slide, just return one set
+    if (awards.length === itemsPerSlide) {
       return [awards];
     }
 
     // Create enough sets for continuous loop
     const allSets = [];
-    const totalSetsNeeded = Math.max(setsNeeded, Math.ceil(awards.length / 3));
+    const totalSetsNeeded = Math.max(setsNeeded, Math.ceil(awards.length / itemsPerSlide));
     
     for (let setIndex = 0; setIndex < totalSetsNeeded; setIndex++) {
       const set = [];
-      for (let i = 0; i < 3; i++) {
-        const awardIndex = (setIndex * 3 + i) % awards.length;
+      for (let i = 0; i < itemsPerSlide; i++) {
+        const awardIndex = (setIndex * itemsPerSlide + i) % awards.length;
         const originalAward = awards[awardIndex];
         // Create unique award object with unique ID for each position
         set.push({
@@ -129,7 +145,13 @@ export default function AwardsSection() {
 
   const groupedData = createContinuousData();
   const totalSets = groupedData.length;
-  const actualSets = Math.ceil(awards.length / 3);
+  const actualSets = Math.ceil(awards.length / (isMobile ? 1 : 3));
+
+  // Recreate grouped data when mobile state changes
+  useEffect(() => {
+    // Reset to first slide when layout changes
+    setActiveSet(0);
+  }, [isMobile]);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -193,28 +215,15 @@ export default function AwardsSection() {
     });
   };
 
-  const goToSlide = (index: number) => {
-    setActiveSet(index % actualSets);
-  };
-
   const handleCardClick = (link: string) => {
     window.open(link, '_blank', 'noopener,noreferrer');
-  };
-
-  // Calculate display index for current slide indicator
-  const getDisplayIndex = () => {
-    return (activeSet % actualSets) + 1;
-  };
-
-  const getTotalDisplaySets = () => {
-    return actualSets;
   };
 
   return (
     <section
       id="awards"
       ref={sectionRef}
-      className="relative py-20 bg-gradient-to-b from-white to-gray-50 overflow-hidden"
+      className="relative py-12 md:py-20 bg-gradient-to-b from-white to-gray-50 overflow-hidden"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -228,26 +237,26 @@ export default function AwardsSection() {
         <div className={`absolute bottom-1/4 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-[#40A748]/20 to-transparent transform transition-all duration-1000 delay-500 ease-out ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}></div>
       </div>
 
-      <div className="container max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div
-          className={`text-center mb-16 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+          className={`text-center mb-8 md:mb-16 transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-[#08193C] relative inline-block">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#08193C] relative inline-block">
             <span className="relative">
               Awards & Recognitions
               <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-300 ease-out origin-left scale-x-0"></span>
               <span className={`absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#F5872E] to-[#3A55A5] rounded-full transition-all duration-1000 delay-500 ease-out ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}></span>
             </span>
           </h2>
-          <p className="mt-6 text-lg text-[#3A55A5] max-w-2xl mx-auto transition-all duration-1000 delay-700 ease-out">
+          <p className="mt-4 md:mt-6 text-base sm:text-lg text-[#3A55A5] max-w-2xl mx-auto transition-all duration-1000 delay-700 ease-out">
             Celebrating excellence and recognition from industry leaders and organizations worldwide.
           </p>
         </div>
 
         {/* 3-Grid Auto Slide Section */}
         <div 
-          className="relative overflow-hidden rounded-2xl"
+          className="relative overflow-hidden rounded-xl md:rounded-2xl"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
@@ -259,20 +268,20 @@ export default function AwardsSection() {
             {groupedData.map((set, setIndex) => (
               <div
                 key={`set-${setIndex}`}
-                className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-8"
+                className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 px-2 sm:px-4 md:px-0"
               >
                 {set.map((award, awardIndex) => (
                   <div 
                     key={award.id || `award-${setIndex}-${awardIndex}`} 
-                    className="group relative h-96 rounded-xl shadow-lg overflow-hidden transition-all duration-500 ease-out transform hover:-translate-y-2 hover:shadow-xl cursor-pointer"
+                    className="group relative h-72 sm:h-80 md:h-96 rounded-lg md:rounded-xl shadow-md md:shadow-lg overflow-hidden transition-all duration-500 ease-out transform hover:-translate-y-1 md:hover:-translate-y-2 hover:shadow-lg md:hover:shadow-xl cursor-pointer"
                     onClick={() => handleCardClick(award.link)}
                   >
                     <Image
                       src={award.image}
                       alt={award.title}
                       fill
-                      className="object-contain object-top transition-transform duration-700 group-hover:scale-110"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-contain object-top transition-transform duration-700 group-hover:scale-105 md:group-hover:scale-110"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                       priority={awardIndex === 0 && setIndex === 0}
                     />
 
@@ -280,27 +289,29 @@ export default function AwardsSection() {
                     <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent"></div>
 
                     {/* Year badge */}
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm">
-                      <span className="text-xs font-semibold text-gray-800">{award.year}</span>
-                    </div>
+                    {award.year && (
+                      <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-white/90 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 shadow-sm">
+                        <span className="text-xs font-semibold text-gray-800">{award.year}</span>
+                      </div>
+                    )}
 
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">
+                    <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4">
+                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-1 sm:mb-2 line-clamp-2">
                         {award.title}
                       </h3>
 
-                      <div className="flex items-center text-white text-sm">
-                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <div className="flex items-center text-white text-xs sm:text-sm">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                           <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
                         </svg>
-                        <span>{award.organization}</span>
+                        <span className="line-clamp-1">{award.organization}</span>
                       </div>
                     </div>
 
                     {/* Click indicator */}
-                    <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-black/50 rounded-full p-2 backdrop-blur-sm">
-                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <div className="absolute top-3 sm:top-4 left-3 sm:left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="bg-black/50 rounded-full p-1.5 sm:p-2 backdrop-blur-sm">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                       </div>
@@ -314,47 +325,69 @@ export default function AwardsSection() {
           {/* Navigation buttons */}
           <button
             onClick={handlePrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
+            className="absolute left-2 sm:left-3 md:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white shadow-lg md:shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
             aria-label="Previous awards"
           >
-            <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd"></path>
             </svg>
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
+            className="absolute right-2 sm:right-3 md:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white shadow-lg md:shadow-xl text-[#3A55A5] hover:bg-[#3A55A5] hover:text-white transition-all duration-300 z-10 group"
             aria-label="Next awards"
           >
-            <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
             </svg>
           </button>
 
-          {/* Indicators - only show for actual award sets */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
-            {Array.from({ length: getTotalDisplaySets() }).map((_, index) => (
-              <button
-                key={`indicator-${index}`}
-                onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-500 ease-in-out ${index === (activeSet % getTotalDisplaySets()) ? 'bg-gradient-to-r from-[#F5872E] to-[#3A55A5] scale-125' : 'bg-gray-300'}`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
+          {/* Mobile indicators */}
+          {isMobile && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+              {Array.from({ length: actualSets }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveSet(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    activeSet === index ? 'bg-[#3A55A5] scale-125' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Current slide indicator */}
-        <div className="flex justify-end items-center mt-6 px-2">
-          <div className="text-base text-[#3A55A5] font-medium">
-            {getDisplayIndex()} / {getTotalDisplaySets()}
+        {/* Current slide indicator for desktop */}
+        {!isMobile && actualSets > 1 && (
+          <div className="flex justify-center items-center mt-6 px-2">
+            <div className="text-sm sm:text-base text-[#3A55A5] font-medium">
+              {activeSet + 1} / {actualSets}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Add subtle background elements */}
-      <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-[#F5872E]/10 blur-3xl"></div>
-      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-[#3A55A5]/10 blur-3xl"></div>
+      <div className="absolute -bottom-10 sm:-bottom-20 -left-10 sm:-left-20 w-20 h-20 sm:w-40 sm:h-40 rounded-full bg-[#F5872E]/10 blur-2xl sm:blur-3xl"></div>
+      <div className="absolute -top-10 sm:-top-20 -right-10 sm:-right-20 w-20 h-20 sm:w-40 sm:h-40 rounded-full bg-[#3A55A5]/10 blur-2xl sm:blur-3xl"></div>
+
+      {/* Custom styles for line clamping */}
+      <style jsx>{`
+        .line-clamp-1 {
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
     </section>
   );
 }

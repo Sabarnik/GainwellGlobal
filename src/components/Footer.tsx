@@ -232,8 +232,6 @@ const BusinessModal: React.FC<BusinessModalProps> = ({ isOpen, onClose, business
 const SleekFooter: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
-  const [showAllBrands, setShowAllBrands] = useState(false);
-  const [showAllCompanies, setShowAllCompanies] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null);
@@ -255,13 +253,8 @@ const SleekFooter: React.FC = () => {
       { label: 'SEM', href: 'https://www.gainwellindia.com/sem' },
       { label: 'SITECH', href: 'https://www.sitechindia-ne.com/' },
       { label: 'Tulip', href: 'https://www.tulipcompression.com/about-us.html' },
-      { label: 'Highwall Miner', href: 'https://www.gainwellindia.com/highwall' },
       { label: 'Lintec & Linnhoff', href: 'https://www.gainwellindia.com/lintec-linnhoff' },
-      { label: 'Zephir & Trackmobile', href: 'https://www.gainwellindia.com/zephir-trackmobile' },
       { label: 'TIL', href: 'https://www.tilindia.in/category' },
-      { label: 'Manitowoc', href: 'https://www.tilindia.in/category' },
-      { label: 'Hyster', href: 'https://www.tilindia.in/category' },
-      { label: 'Snorkel', href: 'https://www.tilindia.in/category' }
     ],
     'Companies': [
       { label: 'Gainwell CAT', href: 'https://www.gainwellindia.com/cat' },
@@ -284,16 +277,12 @@ const SleekFooter: React.FC = () => {
 
     if (mobile) {
       setExpandedSections({});
-      setShowAllBrands(false);
-      setShowAllCompanies(false);
     } else {
       const allExpanded: Record<string, boolean> = {};
       Object.keys(footerLinks).forEach(key => {
         allExpanded[key] = true;
       });
       setExpandedSections(allExpanded);
-      setShowAllBrands(false);
-      setShowAllCompanies(false);
     }
   }, [footerLinks]);
 
@@ -323,14 +312,6 @@ const SleekFooter: React.FC = () => {
       ...prev,
       [section]: !prev[section]
     }));
-  }, []);
-
-  const toggleShowAllBrands = useCallback(() => {
-    setShowAllBrands(prev => !prev);
-  }, []);
-
-  const toggleShowAllCompanies = useCallback(() => {
-    setShowAllCompanies(prev => !prev);
   }, []);
 
   const scrollToTop = useCallback(() => {
@@ -532,10 +513,7 @@ const SleekFooter: React.FC = () => {
                           transition={{ duration: 0.3 }}
                         >
                           {(category === 'Our Brands' || category === 'Companies' || category === 'Community')
-                            ? ((category === 'Our Brands' ? showAllBrands : category === 'Companies' ? showAllCompanies : true)
-                              ? links
-                              : links.slice(0, 5)
-                            ).map((link, i) => {
+                            ? links.map((link, i) => {
                               const linkItem = link as FooterLinkItem;
                                 function handleNavClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void {
                                 // For anchor links (e.g., #csr-grid), scroll smoothly to the section if on the same page
@@ -593,32 +571,6 @@ const SleekFooter: React.FC = () => {
                               </motion.li>
                             ))
                           }
-
-                          {(category === 'Our Brands' || category === 'Companies') && links.length > 5 && (
-                            <motion.li
-                              initial={{ opacity: 0 }}
-                              whileInView={{ opacity: 1 }}
-                              transition={{ duration: 0.3 }}
-                              viewport={{ once: true }}
-                            >
-                              <button
-                                onClick={category === 'Our Brands' ? toggleShowAllBrands : toggleShowAllCompanies}
-                                className="text-[#F5872E] hover:text-[#EF4D2F] text-sm font-medium flex items-center transition-colors mt-2"
-                              >
-                                {(category === 'Our Brands' ? showAllBrands : showAllCompanies) ? (
-                                  <>
-                                    <span>Show Less</span>
-                                    <ChevronUp size={16} className="ml-1" />
-                                  </>
-                                ) : (
-                                  <>
-                                    <span>Show More</span>
-                                    <ChevronDown size={16} className="ml-1" />
-                                  </>
-                                )}
-                              </button>
-                            </motion.li>
-                          )}
                         </motion.ul>
                       )}
                     </AnimatePresence>

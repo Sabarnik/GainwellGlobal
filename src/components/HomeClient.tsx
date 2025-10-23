@@ -13,7 +13,8 @@ import OurPresenceSection from '@/components/GlobalPresence';
 import SleekFooter from '@/components/Footer';
 import GroupCompaniesSection from '@/components/GroupCompanies';
 import PartnersSection from '@/components/PartnerSection';
-import OurTeam from '@/components/OurTeam';
+import CulturePillars from './culturepillars';
+// import OurTeam from '@/components/OurTeam';
 import OurFacilitiesSection from './OurFacilities';
 import AwardsSection from './Awards';
 // import LinkedInAdSection from './LinkedInAdSection';
@@ -24,11 +25,12 @@ export default function HomeClient() {
       <Hero />
       {/* <AboutUsSection /> */}
       <IndustryCarousel />
-      <AboutUs />
-      <OurTeam />
+      <AboutUs /> 
+      {/* <OurTeam /> */}
       {/* <LinkedInAdSection /> */}
       <OurFacilitiesSection />
       <OurValues />
+      <CulturePillars />
       <CSRSection />
       <EventSection />
       <AwardsSection/>

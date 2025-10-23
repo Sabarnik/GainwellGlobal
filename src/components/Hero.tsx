@@ -110,7 +110,7 @@ const Hero: React.FC = () => {
                 {/* Know Us More */}
                 <motion.button
                   onClick={() => {
-                    const aboutSection = document.getElementById('about-us');
+                    const aboutSection = document.getElementById('industry');
                     if (aboutSection) {
                       aboutSection.scrollIntoView({ behavior: 'smooth' });
                     }
