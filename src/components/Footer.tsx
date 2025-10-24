@@ -262,7 +262,8 @@ const SleekFooter: React.FC = () => {
       { label: 'TIL Limited', href: 'https://tilindia.in/' },
       { label: 'Gainwell Engineering', href: 'https://www.gainwellengineering.com/index-india.html' },
       { label: 'Tractors Nepal', href: 'http://www.tractorsnepal.com/' },
-      { label: 'Tulip Compression', href: 'https://www.tulipcompression.com/about-us.html' }
+      { label: 'Tulip Compression', href: 'https://www.tulipcompression.com/about-us.html' },
+      { label: 'Gainwell Trucking', href: 'https://www.gainwelltrucking.com/'}
     ],
     'Community': [
       { label: 'Corporate Social Responsibility', href: '#csr-grid' }

@@ -20,13 +20,13 @@ export default function OurTeamSection() {
     {
       id: 1,
       name: 'Mr. Sunil Kumar Chaturvedi',
-      position: 'Chairman-Gainwell Group',
+      position: 'Vice-Chairperson- Gainwell Group',
       image: `${basePath}/skc.jpg`,
     },
     {   
       id: 2,
       name: 'Mrs. Meena Chaturvedi',
-      position: 'Vice Chairperson-Gainwell Group',
+      position: 'Vice Chairperson- Gainwell Group',
       image: `${basePath}/meena.jpg`,
     },
     {
@@ -44,7 +44,7 @@ export default function OurTeamSection() {
     {
       id: 5,
       name: 'Mr. Sujoy Banerjee',
-      position: 'Group Chief People Officer Corporate Communications & Public Relations',
+      position: 'Group Chief People Officer, Head Marketing & Head Corporate Communications & Public Relations',
       image: `${basePath}/sujoy.jpg`,
     },
     {
