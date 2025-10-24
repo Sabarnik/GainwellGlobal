@@ -52,7 +52,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 const COMPANIES: CompanyInfo[] = [
   {
     key: 'gainwell-commosales',
-    name: 'Gainwell Commosales',
+    name: 'Gainwell CAT',
     logo: `${basePath}/team1.png`,
     website: 'https://www.gainwellindia.com/cat',
     color: '#F5872E',

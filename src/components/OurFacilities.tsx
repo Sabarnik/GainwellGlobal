@@ -33,19 +33,19 @@ export default function OurFacilitiesSection() {
       image: `${basePath}/Greter-noida--Unnati-Facility.jpg`,
       relatedImage: `${basePath}/Greater Noida edit-unnati.jpg`,
     },
-    {
+     {
       id: 2,
       name: '',
       location: '',
-      image: `${basePath}/Asonsol--pragati-Facility.jpg`,
-      relatedImage: `${basePath}/Asansol pragati 2.jpg`,
+      image: `${basePath}/GEPL-Pana-Facility.jpg`,
+      relatedImage: `${basePath}/GEPL-Pana-Facility.jpg`,
     },
     {
       id: 3,
       name: '',
       location: '',
-      image: `${basePath}/udaipur-Facility.jpg`,
-      relatedImage: `${basePath}/udaipur-Facility-pic.jpg`,
+      image: `${basePath}/GEPL-puneFacility.jpg`,
+      relatedImage: `${basePath}/pune.jpeg`,
     },
     {
       id: 4,
@@ -58,16 +58,17 @@ export default function OurFacilitiesSection() {
       id: 5,
       name: '',
       location: '',
-      image: `${basePath}/GEPL-puneFacility.jpg`,
-      relatedImage: `${basePath}/pune.jpeg`,
+      image: `${basePath}/Asonsol--pragati-Facility.jpg`,
+      relatedImage: `${basePath}/Asansol pragati 2.jpg`,
     },
     {
       id: 6,
       name: '',
       location: '',
-      image: `${basePath}/GEPL-Pana-Facility.jpg`,
-      relatedImage: `${basePath}/GEPL-Pana-Facility.jpg`,
+      image: `${basePath}/udaipur-Facility.jpg`,
+      relatedImage: `${basePath}/udaipur-Facility-pic.jpg`,
     },
+   
   ];
 
   // Handle window resize for responsive grouping

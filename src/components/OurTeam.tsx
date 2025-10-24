@@ -20,19 +20,19 @@ export default function OurTeamSection() {
     {
       id: 1,
       name: 'Mr. Sunil Kumar Chaturvedi',
-      position: 'Chairman & Managing Director',
+      position: 'Chairman-Gainwell Group',
       image: `${basePath}/skc.jpg`,
     },
-    {
+    {   
       id: 2,
       name: 'Mrs. Meena Chaturvedi',
-      position: 'Joint Managing Director',
+      position: 'Vice Chairperson-Gainwell Group',
       image: `${basePath}/meena.jpg`,
     },
     {
       id: 3,
       name: 'Mr. Manav Kohli',
-      position: 'Executive Director & Chief Executive Officer',
+      position: 'Executive Director & Chief Executive Officer-GCPL',
       image: `${basePath}/Manav-Kohli-crp-ref.jpg`,
     },
     {
@@ -44,13 +44,13 @@ export default function OurTeamSection() {
     {
       id: 5,
       name: 'Mr. Sujoy Banerjee',
-      position: 'Group Chief People Officer, Group Head Marketing & Group Head Corporate Communications & Public Relations',
+      position: 'Group Chief People Officer Corporate Communications & Public Relations',
       image: `${basePath}/sujoy.jpg`,
     },
     {
       id: 6,
       name: 'Mr. Saikat Bardhan',
-      position: 'Company Secretary & Group Head-Legal, Compliance & Internal Audit',
+      position: 'Group Head-Legal, Compliance & Internal Audit',
       image: `${basePath}/saikat.jpg`,
     },
    {
